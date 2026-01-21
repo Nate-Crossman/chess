@@ -72,4 +72,28 @@ public class ChessPiece {
     public int hashCode() {
         return Objects.hash(color, type);
     }
+
+    @Override
+    public String toString() {
+        char output = ' ';
+        String outputColor = "";
+        String end = "";
+        if (type == PieceType.PAWN) {output = 'P';}
+        else if (type == PieceType.ROOK) {output = 'R';}
+        else if (type == PieceType.KNIGHT) {output = 'H';} //knight is H for horse, K is king
+        else if (type == PieceType.BISHOP) {output = 'B';}
+        else if (type == PieceType.QUEEN) {output = 'Q';}
+        else if (type == PieceType.KING) {output = 'K';}
+
+//        if (color == ChessGame.TeamColor.WHITE) {
+//            outputColor = "\u001B[34m"; //for visibility, white is blue, black is red
+//        }
+//        else if (color == ChessGame.TeamColor.BLACK) {
+//            outputColor = "\u001B[31m";
+//        }
+//        if (outputColor != "") {
+//            end = "\u001B[0m";
+//        }
+        return String.format("%s%c%s", outputColor, output, end);
+    }
 }

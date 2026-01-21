@@ -92,4 +92,21 @@ public class ChessBoard {
     public int hashCode() {
         return Arrays.deepHashCode(tiles);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder output = new StringBuilder();
+        for (int i = 7; i >= 0; i--) {
+            for (int j = 0; j < 8; j++) {
+                if (tiles[i][j] == null) { //there might be a way to do this in ChessPiece.java
+                    output.append("| |");
+                }
+                else {
+                    output.append(String.format("|%s|",tiles[i][j]));
+                }
+            }
+            output.append("\n");
+        }
+        return output.toString();
+    }
 }
