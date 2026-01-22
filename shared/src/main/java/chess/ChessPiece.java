@@ -85,6 +85,139 @@ public class ChessPiece {
         return false;
     }
 
+    /// RECURSIVE MOVE FUNCTIONS FOR ROOKS, BISHOPS, and QUEENS
+    /// If I could figure out how to put a method into an argument, this could be 1 function.
+    //recursive function that moves North until it cannot
+    private void recMoveNorth(ChessBoard board, ChessPosition start, ChessPosition position, Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getNorthPosition();
+        //north position is out of bounds
+        if (!validPosition(newPosition)) return;
+        //north position is ally
+        if (containsPiece(board, newPosition) && !isEnemy(board, newPosition)) return;
+        //north position is enemy
+        if (containsPiece(board, newPosition) && isEnemy(board, newPosition)) {
+            output.add(new ChessMove(start, newPosition, null));
+            return;
+        }
+        output.add(new ChessMove(start, newPosition, null));
+        recMoveNorth(board, start, newPosition, output);
+    }
+
+    //recursive function that moves NorthWest until it cannot
+    private void recMoveNorthWest(ChessBoard board, ChessPosition start, ChessPosition position, Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getNorthWestPosition();
+        //north position is out of bounds
+        if (!validPosition(newPosition)) return;
+        //north position is ally
+        if (containsPiece(board, newPosition) && !isEnemy(board, newPosition)) return;
+        //north position is enemy
+        if (containsPiece(board, newPosition) && isEnemy(board, newPosition)) {
+            output.add(new ChessMove(start, newPosition, null));
+            return;
+        }
+        output.add(new ChessMove(start, newPosition, null));
+        recMoveNorthWest(board, start, newPosition, output);
+    }
+
+    //recursive function that moves West until it cannot
+    private void recMoveWest(ChessBoard board, ChessPosition start, ChessPosition position, Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getWestPosition();
+        //north position is out of bounds
+        if (!validPosition(newPosition)) return;
+        //north position is ally
+        if (containsPiece(board, newPosition) && !isEnemy(board, newPosition)) return;
+        //north position is enemy
+        if (containsPiece(board, newPosition) && isEnemy(board, newPosition)) {
+            output.add(new ChessMove(start, newPosition, null));
+            return;
+        }
+        output.add(new ChessMove(start, newPosition, null));
+        recMoveWest(board, start, newPosition, output);
+    }
+
+    //recursive function that moves Southwest until it cannot
+    private void recMoveSouthWest(ChessBoard board, ChessPosition start, ChessPosition position, Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getSouthWestPosition();
+        //north position is out of bounds
+        if (!validPosition(newPosition)) return;
+        //north position is ally
+        if (containsPiece(board, newPosition) && !isEnemy(board, newPosition)) return;
+        //north position is enemy
+        if (containsPiece(board, newPosition) && isEnemy(board, newPosition)) {
+            output.add(new ChessMove(start, newPosition, null));
+            return;
+        }
+        output.add(new ChessMove(start, newPosition, null));
+        recMoveSouthWest(board, start, newPosition, output);
+    }
+
+    //recursive function that moves South until it cannot
+    private void recMoveSouth(ChessBoard board, ChessPosition start, ChessPosition position, Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getSouthPosition();
+        //north position is out of bounds
+        if (!validPosition(newPosition)) return;
+        //north position is ally
+        if (containsPiece(board, newPosition) && !isEnemy(board, newPosition)) return;
+        //north position is enemy
+        if (containsPiece(board, newPosition) && isEnemy(board, newPosition)) {
+            output.add(new ChessMove(start, newPosition, null));
+            return;
+        }
+        output.add(new ChessMove(start, newPosition, null));
+        recMoveSouth(board, start, newPosition, output);
+    }
+
+    //recursive function that moves Southeast until it cannot
+    private void recMoveSouthEast(ChessBoard board, ChessPosition start, ChessPosition position, Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getSouthEastPosition();
+        //north position is out of bounds
+        if (!validPosition(newPosition)) return;
+        //north position is ally
+        if (containsPiece(board, newPosition) && !isEnemy(board, newPosition)) return;
+        //north position is enemy
+        if (containsPiece(board, newPosition) && isEnemy(board, newPosition)) {
+            output.add(new ChessMove(start, newPosition, null));
+            return;
+        }
+        output.add(new ChessMove(start, newPosition, null));
+        recMoveSouthEast(board, start, newPosition, output);
+    }
+
+    //recursive function that moves East until it cannot
+    private void recMoveEast(ChessBoard board, ChessPosition start, ChessPosition position, Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getEastPosition();
+        //north position is out of bounds
+        if (!validPosition(newPosition)) return;
+        //north position is ally
+        if (containsPiece(board, newPosition) && !isEnemy(board, newPosition)) return;
+        //north position is enemy
+        if (containsPiece(board, newPosition) && isEnemy(board, newPosition)) {
+            output.add(new ChessMove(start, newPosition, null));
+            return;
+        }
+        output.add(new ChessMove(start, newPosition, null));
+        recMoveEast(board, start, newPosition, output);
+    }
+
+    //recursive function that moves Northeast until it cannot
+    private void recMoveNorthEast(ChessBoard board, ChessPosition start, ChessPosition position, Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getNorthEastPosition();
+        //north position is out of bounds
+        if (!validPosition(newPosition)) return;
+        //north position is ally
+        if (containsPiece(board, newPosition) && !isEnemy(board, newPosition)) return;
+        //north position is enemy
+        if (containsPiece(board, newPosition) && isEnemy(board, newPosition)) {
+            output.add(new ChessMove(start, newPosition, null));
+            return;
+        }
+        output.add(new ChessMove(start, newPosition, null));
+        recMoveNorthEast(board, start, newPosition, output);
+    }
+
+
+    /// METHODS THAT RETURN THE COLLECTION OF MOVES, CALLED BASED ON PIECE TYPE
+
     // returns a collection of every possible move of a King Piece on a position
     private Collection<ChessMove> getKingMove(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> output = new HashSet<>();
@@ -147,17 +280,36 @@ public class ChessPiece {
 
     // returns a collection of every possible move of a Rook Piece on a position
     private Collection<ChessMove> getRookMove(ChessBoard board, ChessPosition myPosition) {
-        return null;
+        Collection<ChessMove> output = new HashSet<>();
+        recMoveNorth(board, myPosition, myPosition, output);
+        recMoveEast(board, myPosition, myPosition, output);
+        recMoveSouth(board, myPosition, myPosition, output);
+        recMoveWest(board, myPosition, myPosition, output);
+        return output;
     }
 
     // returns a collection of every possible move of a Bishop Piece on a position
     private Collection<ChessMove> getBishopMove(ChessBoard board, ChessPosition myPosition) {
-        return null;
+        Collection<ChessMove> output = new HashSet<>();
+        recMoveNorthWest(board, myPosition, myPosition, output);
+        recMoveNorthEast(board, myPosition, myPosition, output);
+        recMoveSouthEast(board, myPosition, myPosition, output);
+        recMoveSouthWest(board, myPosition, myPosition, output);
+        return output;
     }
 
     // returns a collection of every possible move of a Queen Piece on a position
     private Collection<ChessMove> getQueenMove(ChessBoard board, ChessPosition myPosition) {
-        return null;
+        Collection<ChessMove> output = new HashSet<>();
+        recMoveNorth(board, myPosition, myPosition, output);
+        recMoveEast(board, myPosition, myPosition, output);
+        recMoveSouth(board, myPosition, myPosition, output);
+        recMoveWest(board, myPosition, myPosition, output);
+        recMoveNorthWest(board, myPosition, myPosition, output);
+        recMoveNorthEast(board, myPosition, myPosition, output);
+        recMoveSouthEast(board, myPosition, myPosition, output);
+        recMoveSouthWest(board, myPosition, myPosition, output);
+        return output;
     }
 
     // returns a collection of every possible move of a Black Pawn Piece on a position
@@ -183,18 +335,21 @@ public class ChessPiece {
             return getKingMove(board,myPosition);
         }
         //knight moves
-        else if (type == PieceType.KNIGHT) {
+        if (type == PieceType.KNIGHT) {
             return getKnightMove(board,myPosition);
         }
         //rook moves
-        else if (type == PieceType.ROOK) {
-
+        if (type == PieceType.ROOK) {
+            return getRookMove(board, myPosition);
         }
-
         //bishop moves
-        else if (type == PieceType.BISHOP) {}
+        if (type == PieceType.BISHOP) {
+            return getBishopMove(board, myPosition);
+        }
         //queen moves
-        else if (type == PieceType.QUEEN) {}
+        if (type == PieceType.QUEEN) {
+            return getQueenMove(board, myPosition);
+        }
         //pawn moves
         else if (type == PieceType.PAWN) {
 
