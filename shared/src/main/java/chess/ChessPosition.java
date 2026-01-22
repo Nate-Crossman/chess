@@ -34,6 +34,31 @@ public class ChessPosition {
         return this.col;
     }
 
+    public ChessPosition getNorthPosition() {
+        return new ChessPosition(row+1,col);
+    }
+    public ChessPosition getNorthEastPosition() {
+        return new ChessPosition(row+1,col+1);
+    }
+    public ChessPosition getEastPosition() {
+        return new ChessPosition(row,col+1);
+    }
+    public ChessPosition getSouthEastPosition() {
+        return new ChessPosition(row-1,col+1);
+    }
+    public ChessPosition getSouthPosition() {
+        return new ChessPosition(row-1,col);
+    }
+    public ChessPosition getSouthWestPosition() {
+        return new ChessPosition(row-1,col-1);
+    }
+    public ChessPosition getWestPosition() {
+        return new ChessPosition(row,col-1);
+    }
+    public ChessPosition getNorthWestPosition() {
+        return new ChessPosition(row+1,col-1);
+    }
+
     // Intellj generated equals and hash codes
     @Override
     public boolean equals(Object o) {

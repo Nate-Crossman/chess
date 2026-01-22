@@ -51,10 +51,10 @@ public class ChessPiece {
 
     // returns true if a position is on the chess board
     private boolean validPosition (ChessPosition position) {
-        if (position.getRow() < 0 | position.getRow() > 7) {
+        if (position.getRow() < 1 | position.getRow() > 8) {
             return false;
         }
-        if (position.getColumn() < 0 | position.getColumn() > 7) {
+        if (position.getColumn() < 1 | position.getColumn() > 8) {
             return false;
         }
         return true;
@@ -67,13 +67,51 @@ public class ChessPiece {
 
     // returns true if the piece on the position is the opposite color as this piece
     private boolean isEnemy(ChessBoard board, ChessPosition position) {
-        return true;
+        ChessGame.TeamColor otherType = board.getPiece(position).getTeamColor();
+        if (color == ChessGame.TeamColor.WHITE && otherType == ChessGame.TeamColor.BLACK) {
+            return true;
+        }
+        if (color == ChessGame.TeamColor.BLACK && otherType == ChessGame.TeamColor.WHITE) {
+            return true;
+        }
+        return false;
+    }
+
+    // returns true if the position is open for regular movement (empty or enemy piece)
+    private boolean validMovePosition(ChessBoard board, ChessPosition position) {
+        if (!validPosition(position)) return false;
+        if (!containsPiece(board, position)) return true;
+        if (isEnemy(board,position)) return true;
+        return false;
     }
 
     // returns a collection of every possible move of a King Piece on a position
     private Collection<ChessMove> getKingMove(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> output = new HashSet<>();
-        output.add(new ChessMove(myPosition, myPosition, null));
+        if (validMovePosition(board, myPosition.getNorthPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getNorthPosition(), null));
+        }
+        if (validMovePosition(board, myPosition.getNorthWestPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getNorthWestPosition(), null));
+        }
+        if (validMovePosition(board, myPosition.getWestPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getWestPosition(), null));
+        }
+        if (validMovePosition(board, myPosition.getSouthWestPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getSouthWestPosition(), null));
+        }
+        if (validMovePosition(board, myPosition.getSouthPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getSouthPosition(), null));
+        }
+        if (validMovePosition(board, myPosition.getSouthEastPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getSouthEastPosition(), null));
+        }
+        if (validMovePosition(board, myPosition.getEastPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getEastPosition(), null));
+        }
+        if (validMovePosition(board, myPosition.getNorthEastPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getNorthEastPosition(), null));
+        }
         return output;
     }
 
