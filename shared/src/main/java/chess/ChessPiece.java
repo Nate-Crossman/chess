@@ -1,6 +1,8 @@
 package chess;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 
 /**
@@ -70,7 +72,9 @@ public class ChessPiece {
 
     // returns a collection of every possible move of a King Piece on a position
     private Collection<ChessMove> getKingMove(ChessBoard board, ChessPosition myPosition) {
-        return null;
+        Collection<ChessMove> output = new HashSet<>();
+        output.add(new ChessMove(myPosition, myPosition, null));
+        return output;
     }
 
     // returns a collection of every possible move of a Knight Piece on a position
@@ -113,7 +117,7 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         //king moves
         if (type == PieceType.KING) {
-
+            return getKingMove(board,myPosition);
         }
         //knight moves
         else if (type == PieceType.KNIGHT) {

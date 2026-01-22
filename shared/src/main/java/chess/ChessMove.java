@@ -61,4 +61,9 @@ public class ChessMove {
     public int hashCode() {
         return Objects.hash(start, end, promotion);
     }
+
+    @Override
+    public String toString() {
+        return String.format("(%s to %s)",start,end);
+    }
 }

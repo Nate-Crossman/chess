@@ -51,20 +51,17 @@ public class ChessPosition {
 
     @Override
     public String toString() {
-        char rowChar = ' '; //invalid coords will be represented by spaces
+        //invalid coords will be represented by spaces
         char colChar = ' ';
-        if (row >= 0 && row < 8) {
-            rowChar = (char) (row+1);
-        }
-        if (col == 0) {colChar = 'a';}
-        else if (col == 1) {colChar = 'b';}
-        else if (col == 2) {colChar = 'c';}
-        else if (col == 3) {colChar = 'd';}
-        else if (col == 4) {colChar = 'e';}
-        else if (col == 5) {colChar = 'f';}
-        else if (col == 6) {colChar = 'g';}
-        else if (col == 7) {colChar = 'h';}
+        if (col == 1) {colChar = 'a';}
+        else if (col == 2) {colChar = 'b';}
+        else if (col == 3) {colChar = 'c';}
+        else if (col == 4) {colChar = 'd';}
+        else if (col == 5) {colChar = 'e';}
+        else if (col == 6) {colChar = 'f';}
+        else if (col == 7) {colChar = 'g';}
+        else if (col == 8) {colChar = 'h';}
 
-        return String.format("{%c,%c}", rowChar, colChar);
+        return String.format("{%d,%c}", row, colChar);
     }
 }
