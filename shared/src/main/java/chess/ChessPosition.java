@@ -59,6 +59,32 @@ public class ChessPosition {
         return new ChessPosition(row+1,col-1);
     }
 
+    //knight moves
+    public ChessPosition getUpUpRightPosition() {
+        return new ChessPosition(row+2, col+1);
+    }
+    public ChessPosition getUpRightRightPosition() {
+        return new ChessPosition(row+1, col+2);
+    }
+    public ChessPosition getDownRightRightPosition() {
+        return new ChessPosition(row-1, col+2);
+    }
+    public ChessPosition getDownDownRightPosition() {
+        return new ChessPosition(row-2, col+1);
+    }
+    public ChessPosition getDownDownLeftPosition() {
+        return new ChessPosition(row-2, col-1);
+    }
+    public ChessPosition getDownLeftLeftPosition() {
+        return new ChessPosition(row-1, col-2);
+    }
+    public ChessPosition getUpLeftLeftPosition() {
+        return new ChessPosition(row+1, col-2);
+    }
+    public ChessPosition getUpUpLeftPosition() {
+        return new ChessPosition(row+2, col-1);
+    }
+
     // Intellj generated equals and hash codes
     @Override
     public boolean equals(Object o) {

@@ -117,7 +117,32 @@ public class ChessPiece {
 
     // returns a collection of every possible move of a Knight Piece on a position
     private Collection<ChessMove> getKnightMove(ChessBoard board, ChessPosition myPosition) {
-        return null;
+        Collection<ChessMove> output = new HashSet<>();
+        if (validMovePosition(board, myPosition.getUpUpRightPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getUpUpRightPosition(), null));
+        }
+        if (validMovePosition(board, myPosition.getUpRightRightPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getUpRightRightPosition(), null));
+        }
+        if (validMovePosition(board, myPosition.getDownRightRightPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getDownRightRightPosition(), null));
+        }
+        if (validMovePosition(board, myPosition.getDownDownRightPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getDownDownRightPosition(), null));
+        }
+        if (validMovePosition(board, myPosition.getDownDownLeftPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getDownDownLeftPosition(), null));
+        }
+        if (validMovePosition(board, myPosition.getDownLeftLeftPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getDownLeftLeftPosition(), null));
+        }
+        if (validMovePosition(board, myPosition.getUpLeftLeftPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getUpLeftLeftPosition(), null));
+        }
+        if (validMovePosition(board, myPosition.getUpUpLeftPosition())) {
+            output.add(new ChessMove(myPosition, myPosition.getUpUpLeftPosition(), null));
+        }
+        return output;
     }
 
     // returns a collection of every possible move of a Rook Piece on a position
@@ -159,7 +184,7 @@ public class ChessPiece {
         }
         //knight moves
         else if (type == PieceType.KNIGHT) {
-
+            return getKnightMove(board,myPosition);
         }
         //rook moves
         else if (type == PieceType.ROOK) {
