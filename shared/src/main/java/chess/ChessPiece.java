@@ -45,6 +45,64 @@ public class ChessPiece {
         return type;
     }
 
+    /// HELPER FUNCTIONS ///
+
+    // returns true if a position is on the chess board
+    private boolean validPosition (ChessPosition position) {
+        if (position.getRow() < 0 | position.getRow() > 7) {
+            return false;
+        }
+        if (position.getColumn() < 0 | position.getColumn() > 7) {
+            return false;
+        }
+        return true;
+    }
+
+    // returns true if a position has a piece on it
+    private boolean containsPiece(ChessBoard board, ChessPosition position) {
+        return (board.getPiece(position) != null);
+    }
+
+    // returns true if the piece on the position is the opposite color as this piece
+    private boolean isEnemy(ChessBoard board, ChessPosition position) {
+        return true;
+    }
+
+    // returns a collection of every possible move of a King Piece on a position
+    private Collection<ChessMove> getKingMove(ChessBoard board, ChessPosition myPosition) {
+        return null;
+    }
+
+    // returns a collection of every possible move of a Knight Piece on a position
+    private Collection<ChessMove> getKnightMove(ChessBoard board, ChessPosition myPosition) {
+        return null;
+    }
+
+    // returns a collection of every possible move of a Rook Piece on a position
+    private Collection<ChessMove> getRookMove(ChessBoard board, ChessPosition myPosition) {
+        return null;
+    }
+
+    // returns a collection of every possible move of a Bishop Piece on a position
+    private Collection<ChessMove> getBishopMove(ChessBoard board, ChessPosition myPosition) {
+        return null;
+    }
+
+    // returns a collection of every possible move of a Queen Piece on a position
+    private Collection<ChessMove> getQueenMove(ChessBoard board, ChessPosition myPosition) {
+        return null;
+    }
+
+    // returns a collection of every possible move of a Black Pawn Piece on a position
+    private Collection<ChessMove> getPawnMoveBlack(ChessBoard board, ChessPosition myPosition) {
+        return null;
+    }
+
+    // returns a collection of every possible move of a White Pawn Piece on a position
+    private Collection<ChessMove> getPawnMoveWhite(ChessBoard board, ChessPosition myPosition) {
+        return null;
+    }
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -53,10 +111,28 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
-        //create functions for similar things
+        //king moves
+        if (type == PieceType.KING) {
 
-        //read the type to find out what movement we can do
+        }
+        //knight moves
+        else if (type == PieceType.KNIGHT) {
+
+        }
+        //rook moves
+        else if (type == PieceType.ROOK) {
+
+        }
+
+        //bishop moves
+        else if (type == PieceType.BISHOP) {}
+        //queen moves
+        else if (type == PieceType.QUEEN) {}
+        //pawn moves
+        else if (type == PieceType.PAWN) {
+
+        }
+        return null;
     }
 
     @Override
