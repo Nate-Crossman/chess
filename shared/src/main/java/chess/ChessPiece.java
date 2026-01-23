@@ -315,17 +315,18 @@ public class ChessPiece {
     // returns a collection of every possible move of a White Pawn Piece on a position
     private Collection<ChessMove> getPawnMoveWhite(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> output = new HashSet<>();
+        ChessPosition north = myPosition.getNorthPosition();
+        ChessPosition northeast = myPosition.getNorthEastPosition();
+        ChessPosition northwest = myPosition.getNorthWestPosition();
         //double move
         if (myPosition.getRow() == 2) {
             ChessPosition doubleNorth = myPosition.getDoubleNorthPosition();
-            if (!containsPiece(board, doubleNorth)) {
+            if (!containsPiece(board, doubleNorth) && !containsPiece(board, north)) {
                 output.add(new ChessMove(myPosition, doubleNorth, null));
             }
         }
         //regular move
-        ChessPosition north = myPosition.getNorthPosition();
-        ChessPosition northeast = myPosition.getNorthEastPosition();
-        ChessPosition northwest = myPosition.getNorthWestPosition();
+
         if (!containsPiece(board, north)) {
             if (myPosition.getRow() == 7) {
                 output.add(new ChessMove(myPosition, north, PieceType.ROOK));
@@ -357,7 +358,45 @@ public class ChessPiece {
 
     // returns a collection of every possible move of a Black Pawn Piece on a position
     private Collection<ChessMove> getPawnMoveBlack(ChessBoard board, ChessPosition myPosition) {
-        return null;
+        Collection<ChessMove> output = new HashSet<>();
+        ChessPosition south = myPosition.getSouthPosition();
+        ChessPosition southeast = myPosition.getSouthEastPosition();
+        ChessPosition southwest = myPosition.getSouthWestPosition();
+        //double move
+        if (myPosition.getRow() == 7) {
+            ChessPosition doubleSouth = myPosition.getDoubleSouthPosition();
+            if (!containsPiece(board, doubleSouth) && !containsPiece(board, south)) {
+                output.add(new ChessMove(myPosition, doubleSouth, null));
+            }
+        }
+        //regular move
+        if (!containsPiece(board, south)) {
+            if (myPosition.getRow() == 2) {
+                output.add(new ChessMove(myPosition, south, PieceType.ROOK));
+                output.add(new ChessMove(myPosition, south, PieceType.BISHOP));
+                output.add(new ChessMove(myPosition, south, PieceType.KNIGHT));
+                output.add(new ChessMove(myPosition, south, PieceType.QUEEN));
+            }
+            else {output.add(new ChessMove(myPosition, south, null));}
+        }
+        //regular attack
+        if (validPosition(southeast) && containsPiece(board,southeast) && isEnemy(board, southeast)) {
+            if (myPosition.getRow() == 2) {
+                output.add(new ChessMove(myPosition, southeast, PieceType.ROOK));
+                output.add(new ChessMove(myPosition, southeast, PieceType.BISHOP));
+                output.add(new ChessMove(myPosition, southeast, PieceType.KNIGHT));
+                output.add(new ChessMove(myPosition, southeast, PieceType.QUEEN));
+            } else output.add(new ChessMove(myPosition, southeast, null));
+        }
+        if (validPosition(southwest) && containsPiece(board, southwest) && isEnemy(board, southwest)) {
+            if (myPosition.getRow() == 2) {
+                output.add(new ChessMove(myPosition, southwest, PieceType.ROOK));
+                output.add(new ChessMove(myPosition, southwest, PieceType.BISHOP));
+                output.add(new ChessMove(myPosition, southwest, PieceType.KNIGHT));
+                output.add(new ChessMove(myPosition, southwest, PieceType.QUEEN));
+            } else output.add(new ChessMove(myPosition, southwest, null));
+        }
+        return output;
     }
 
 
