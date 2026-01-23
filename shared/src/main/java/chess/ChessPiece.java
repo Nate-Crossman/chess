@@ -312,15 +312,55 @@ public class ChessPiece {
         return output;
     }
 
+    // returns a collection of every possible move of a White Pawn Piece on a position
+    private Collection<ChessMove> getPawnMoveWhite(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> output = new HashSet<>();
+        //double move
+        if (myPosition.getRow() == 2) {
+            ChessPosition doubleNorth = myPosition.getDoubleNorthPosition();
+            if (!containsPiece(board, doubleNorth)) {
+                output.add(new ChessMove(myPosition, doubleNorth, null));
+            }
+        }
+        //regular move
+        ChessPosition north = myPosition.getNorthPosition();
+        ChessPosition northeast = myPosition.getNorthEastPosition();
+        ChessPosition northwest = myPosition.getNorthWestPosition();
+        if (!containsPiece(board, north)) {
+            if (myPosition.getRow() == 7) {
+                output.add(new ChessMove(myPosition, north, PieceType.ROOK));
+                output.add(new ChessMove(myPosition, north, PieceType.BISHOP));
+                output.add(new ChessMove(myPosition, north, PieceType.KNIGHT));
+                output.add(new ChessMove(myPosition, north, PieceType.QUEEN));
+            }
+            else {output.add(new ChessMove(myPosition, north, null));}
+        }
+        //regular attack
+        if (validPosition(northeast) && containsPiece(board,northeast) && isEnemy(board, northeast)) {
+            if (myPosition.getRow() == 7) {
+                output.add(new ChessMove(myPosition, northeast, PieceType.ROOK));
+                output.add(new ChessMove(myPosition, northeast, PieceType.BISHOP));
+                output.add(new ChessMove(myPosition, northeast, PieceType.KNIGHT));
+                output.add(new ChessMove(myPosition, northeast, PieceType.QUEEN));
+            } else output.add(new ChessMove(myPosition, northeast, null));
+        }
+        if (validPosition(northwest) && containsPiece(board, northwest) && isEnemy(board, northwest)) {
+            if (myPosition.getRow() == 7) {
+                output.add(new ChessMove(myPosition, northwest, PieceType.ROOK));
+                output.add(new ChessMove(myPosition, northwest, PieceType.BISHOP));
+                output.add(new ChessMove(myPosition, northwest, PieceType.KNIGHT));
+                output.add(new ChessMove(myPosition, northwest, PieceType.QUEEN));
+            } else output.add(new ChessMove(myPosition, northwest, null));
+        }
+        return output;
+    }
+
     // returns a collection of every possible move of a Black Pawn Piece on a position
     private Collection<ChessMove> getPawnMoveBlack(ChessBoard board, ChessPosition myPosition) {
         return null;
     }
 
-    // returns a collection of every possible move of a White Pawn Piece on a position
-    private Collection<ChessMove> getPawnMoveWhite(ChessBoard board, ChessPosition myPosition) {
-        return null;
-    }
+
 
     /**
      * Calculates all the positions a chess piece can move to
@@ -351,8 +391,9 @@ public class ChessPiece {
             return getQueenMove(board, myPosition);
         }
         //pawn moves
-        else if (type == PieceType.PAWN) {
-
+        if (type == PieceType.PAWN) {
+            if (color == ChessGame.TeamColor.WHITE) return getPawnMoveWhite(board, myPosition);
+            if (color == ChessGame.TeamColor.BLACK) return getPawnMoveBlack(board, myPosition);
         }
         return null;
     }

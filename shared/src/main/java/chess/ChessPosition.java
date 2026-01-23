@@ -85,6 +85,15 @@ public class ChessPosition {
         return new ChessPosition(row+2, col-1);
     }
 
+    public ChessPosition getDoubleNorthPosition() {
+        return new ChessPosition(row+2, col);
+    }
+
+    public ChessPosition getDoubleSouthPosition() {
+        return new ChessPosition(row-2, col);
+    }
+
+
     // Intellj generated equals and hash codes
     @Override
     public boolean equals(Object o) {
