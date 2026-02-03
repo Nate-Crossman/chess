@@ -55,7 +55,13 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        if (board.getPiece(startPosition) == null) return null;
+        Collection<ChessMove> moves = board.getPiece(startPosition).pieceMoves(board, startPosition);
+        //iterate through every move
+        //clone board and make move
+        //if move puts king in danger remove, else keep in collection
+        //return collection
+        return moves;
     }
 
     /**
@@ -75,7 +81,11 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        //iterate through entire board
+        //if we find the teamColor king's position, remember that as a variable
+        //get the move of every piece while iterating
+        //if any end position on any possible moves is on the king's position, return true
+        return false;
     }
 
     /**
@@ -105,7 +115,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -114,7 +124,7 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return board;
     }
 
     @Override
