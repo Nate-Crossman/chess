@@ -9,16 +9,21 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
+    boolean isWhiteTurn;
+    ChessBoard board;
 
     public ChessGame() {
-
+        isWhiteTurn = true;
+        board = new ChessBoard();
+        board.resetBoard();
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        if (isWhiteTurn) return TeamColor.WHITE;
+        return TeamColor.BLACK;
     }
 
     /**
@@ -27,7 +32,10 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        if (team == TeamColor.WHITE) {
+            isWhiteTurn = true;
+        }
+        isWhiteTurn = false;
     }
 
     /**
