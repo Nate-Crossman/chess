@@ -11,7 +11,7 @@ import java.util.Objects;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessPiece {
+public class ChessPiece implements Cloneable {
 
     ChessGame.TeamColor color;
     ChessPiece.PieceType type;
@@ -473,5 +473,10 @@ public class ChessPiece {
 //            end = "\u001B[0m";
 //        }
         return String.format("%s%c%s", outputColor, output, end);
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }
