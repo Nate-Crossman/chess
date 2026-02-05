@@ -24,7 +24,9 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        if (isWhiteTurn) return TeamColor.WHITE;
+        if (isWhiteTurn) {
+            return TeamColor.WHITE;
+        }
         return TeamColor.BLACK;
     }
 
@@ -36,8 +38,9 @@ public class ChessGame {
     public void setTeamTurn(TeamColor team) {
         if (team == TeamColor.WHITE) {
             isWhiteTurn = true;
-        }
+        } else {
         isWhiteTurn = false;
+        }
     }
 
     /**
@@ -58,9 +61,9 @@ public class ChessGame {
 
     public void changeTeamTurn() {
         if (isWhiteTurn) {
-            isWhiteTurn = false;
+            setTeamTurn(TeamColor.BLACK);
         } else {
-            isWhiteTurn = true;
+            setTeamTurn(TeamColor.WHITE);
         }
     }
 
@@ -133,6 +136,13 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition startPosition = move.getStartPosition();
+        ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null) {
+            throw new InvalidMoveException();
+        }
+        if ( piece.getTeamColor() != getTeamTurn()) {
+            throw new InvalidMoveException();
+        }
         Collection<ChessMove> validMoves = validMoves(startPosition);
         if (validMoves.contains(move)) {
             board.movePiece(move);
