@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 
 /**
@@ -47,6 +48,48 @@ public class ChessGame {
         BLACK
     }
 
+    //returns the opposite team color
+    public TeamColor oppositeTeam(TeamColor color) {
+        if (color == TeamColor.WHITE) {
+            return TeamColor.BLACK;
+        }
+        return TeamColor.WHITE;
+    }
+
+    //returns a collection of every possible move (NOT ACCOUNTING FOR CHECK AND SUCH) by a team
+    public Collection<ChessMove> allMovesByColor(ChessBoard board, TeamColor color) {
+        Collection<ChessMove> output = new HashSet<>();
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                ChessPosition position = new ChessPosition(i,j);
+                ChessPiece piece = board.getPiece(position);
+                if (piece != null && piece.getTeamColor() == color) {
+                    Collection<ChessMove> pieceMoves = piece.pieceMoves(board, position);
+                    output.addAll(pieceMoves);
+                }
+            }
+        }
+        return output;
+    }
+
+    //returns the position of a team color's King piece
+    public ChessPosition getKingPositionByColor(ChessBoard board, TeamColor color) {
+        ChessPosition kingPosition = null;
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                ChessPosition position = new ChessPosition(i,j);
+                ChessPiece piece = board.getPiece(position);
+                //Note -- Could Probably Improve Readability of this if statement
+                if (piece != null &&
+                    piece.getPieceType() == ChessPiece.PieceType.KING &&
+                    piece.getTeamColor() == color) {
+                    kingPosition = position;
+                }
+            }
+        }
+        return kingPosition;
+    }
+
     /**
      * Gets a valid moves for a piece at the given location
      *
@@ -81,10 +124,13 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        //iterate through entire board
-        //if we find the teamColor king's position, remember that as a variable
-        //get the move of every piece while iterating
-        //if any end position on any possible moves is on the king's position, return true
+        ChessPosition kingPosition = getKingPositionByColor(board, teamColor);
+        Collection<ChessMove> moves = allMovesByColor(board, oppositeTeam(teamColor));
+        for (ChessMove move : moves) {
+            if (move.getEndPosition() == kingPosition) {
+                return true;
+            }
+        }
         return false;
     }
 
