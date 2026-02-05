@@ -16,6 +16,19 @@ public class ChessBoard implements Cloneable {
         tiles =  new ChessPiece[8][8];
     }
 
+    public ChessBoard(ChessBoard board) {
+        this.tiles = new ChessPiece[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ChessPosition position = new ChessPosition(i+1,j+1);
+                ChessPiece piece = board.getPiece(position);
+                if (piece != null) {
+                    this.tiles[i][j] = piece;
+                }
+            }
+        }
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *
@@ -79,6 +92,14 @@ public class ChessBoard implements Cloneable {
         tiles[0][7] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
     }
 
+    //Using a ChessMove, moves the piece from the start position to the end position.
+    public void movePiece(ChessMove move) {
+        ChessPiece piece = getPiece(move.getStartPosition());
+        if (piece == null) return;
+        addPiece(move.getEndPosition(), piece);
+        addPiece(move.getStartPosition(), null);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
@@ -115,6 +136,9 @@ public class ChessBoard implements Cloneable {
         ChessBoard clonedBoard = (ChessBoard) super.clone();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
+                if (tiles[i][j] == null) {
+
+                }
                 clonedBoard.tiles[i][j] = (ChessPiece) tiles[i][j].clone();
             }
         }

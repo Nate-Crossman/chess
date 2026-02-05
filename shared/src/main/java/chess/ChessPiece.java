@@ -21,6 +21,11 @@ public class ChessPiece implements Cloneable {
         type = pieceType;
     }
 
+    public ChessPiece(ChessPiece piece) {
+        color = piece.getTeamColor();
+        type = piece.getPieceType();
+    }
+
     /**
      * The various different chess piece options
      */

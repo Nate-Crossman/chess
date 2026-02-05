@@ -99,12 +99,22 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         if (board.getPiece(startPosition) == null) return null;
-        Collection<ChessMove> moves = board.getPiece(startPosition).pieceMoves(board, startPosition);
+        Collection<ChessMove> allMoves = board.getPiece(startPosition).pieceMoves(board, startPosition);
+        Collection<ChessMove> safeMoves = new HashSet<>();
+        TeamColor pieceColor = board.getPiece(startPosition).getTeamColor();
         //iterate through every move
+        for (ChessMove move : allMoves) {
+            ChessBoard clonedBoard = new ChessBoard(board);
+            clonedBoard.movePiece(move);
+            if (!isInCheckHelper(pieceColor, clonedBoard)) {
+                safeMoves.add(move);
+            }
+
+        }
         //clone board and make move
         //if move puts king in danger remove, else keep in collection
         //return collection
-        return moves;
+        return safeMoves;
     }
 
     /**
@@ -117,13 +127,8 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
-    /**
-     * Determines if the given team is in check
-     *
-     * @param teamColor which team to check for check
-     * @return True if the specified team is in check
-     */
-    public boolean isInCheck(TeamColor teamColor) {
+    //Helper function to determine if a team is in check, can be used with other boards
+    public boolean isInCheckHelper(TeamColor teamColor, ChessBoard board) {
         ChessPosition kingPosition = getKingPositionByColor(board, teamColor);
         Collection<ChessMove> moves = allMovesByColor(board, oppositeTeam(teamColor));
         for (ChessMove move : moves) {
@@ -132,6 +137,16 @@ public class ChessGame {
             }
         }
         return false;
+    }
+
+    /**
+     * Determines if the given team is in check
+     *
+     * @param teamColor which team to check for check
+     * @return True if the specified team is in check
+     */
+    public boolean isInCheck(TeamColor teamColor) {
+        return isInCheckHelper(teamColor, this.board);
     }
 
     /**
