@@ -96,7 +96,21 @@ public class ChessBoard implements Cloneable {
     public void movePiece(ChessMove move) {
         ChessPiece piece = getPiece(move.getStartPosition());
         if (piece == null) return;
-        addPiece(move.getEndPosition(), piece);
+        if (move.getPromotionPiece() == null) {
+            addPiece(move.getEndPosition(), piece);
+        }
+        else if (move.getPromotionPiece() == ChessPiece.PieceType.QUEEN) {
+            addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), ChessPiece.PieceType.QUEEN));
+        }
+        else if (move.getPromotionPiece() == ChessPiece.PieceType.KNIGHT) {
+            addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), ChessPiece.PieceType.KNIGHT));
+        }
+        else if (move.getPromotionPiece() == ChessPiece.PieceType.ROOK) {
+            addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), ChessPiece.PieceType.ROOK));
+        }
+        else if (move.getPromotionPiece() == ChessPiece.PieceType.BISHOP) {
+            addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), ChessPiece.PieceType.BISHOP));
+        }
         addPiece(move.getStartPosition(), null);
     }
 

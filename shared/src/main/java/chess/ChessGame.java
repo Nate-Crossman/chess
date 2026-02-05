@@ -56,6 +56,14 @@ public class ChessGame {
         return TeamColor.WHITE;
     }
 
+    public void changeTeamTurn() {
+        if (isWhiteTurn) {
+            isWhiteTurn = false;
+        } else {
+            isWhiteTurn = true;
+        }
+    }
+
     //returns a collection of every possible move (NOT ACCOUNTING FOR CHECK AND SUCH) by a team
     public Collection<ChessMove> allMovesByColor(ChessBoard board, TeamColor color) {
         Collection<ChessMove> output = new HashSet<>();
@@ -124,7 +132,14 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPosition startPosition = move.getStartPosition();
+        Collection<ChessMove> validMoves = validMoves(startPosition);
+        if (validMoves.contains(move)) {
+            board.movePiece(move);
+        } else {
+            throw new InvalidMoveException();
+        }
+        changeTeamTurn();
     }
 
     //Helper function to determine if a team is in check, can be used with other boards
