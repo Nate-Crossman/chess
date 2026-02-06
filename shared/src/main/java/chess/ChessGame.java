@@ -101,6 +101,24 @@ public class ChessGame {
         return kingPosition;
     }
 
+    public Collection<ChessMove> safeMoves(ChessBoard board, Collection<ChessMove> moves, TeamColor color) {
+        Collection<ChessMove> safeMoves = new HashSet<>();
+        //iterate through every move
+        for (ChessMove move : moves) {
+            ChessBoard clonedBoard = new ChessBoard(board);
+            clonedBoard.movePiece(move);
+            if (!isInCheckHelper(color, clonedBoard)) {
+                safeMoves.add(move);
+            }
+
+        }
+        return safeMoves;
+    }
+
+    public boolean isUnableToMove (Collection<ChessMove> moves) {
+        return moves.isEmpty();
+    }
+
     /**
      * Gets a valid moves for a piece at the given location
      *
@@ -111,21 +129,8 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         if (board.getPiece(startPosition) == null) return null;
         Collection<ChessMove> allMoves = board.getPiece(startPosition).pieceMoves(board, startPosition);
-        Collection<ChessMove> safeMoves = new HashSet<>();
         TeamColor pieceColor = board.getPiece(startPosition).getTeamColor();
-        //iterate through every move
-        for (ChessMove move : allMoves) {
-            ChessBoard clonedBoard = new ChessBoard(board);
-            clonedBoard.movePiece(move);
-            if (!isInCheckHelper(pieceColor, clonedBoard)) {
-                safeMoves.add(move);
-            }
-
-        }
-        //clone board and make move
-        //if move puts king in danger remove, else keep in collection
-        //return collection
-        return safeMoves;
+        return safeMoves(board, allMoves, pieceColor);
     }
 
     /**
@@ -181,7 +186,9 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> moves = allMovesByColor(board, teamColor);
+        moves = safeMoves(board, moves, teamColor);
+        return (isInCheck(teamColor) && isUnableToMove(moves));
     }
 
     /**
@@ -192,7 +199,9 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> moves = allMovesByColor(board, teamColor);
+        moves = safeMoves(board, moves, teamColor);
+        return (!isInCheck(teamColor) && isUnableToMove(moves));
     }
 
     /**
