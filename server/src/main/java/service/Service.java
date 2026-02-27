@@ -1,6 +1,7 @@
 package service;
 
 import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
 import model.*;
 
 public class Service {
@@ -12,6 +13,11 @@ public class Service {
     }
 
     public RegisterResult register(UserData userData) {
-        return DataAccess.
+        try {
+        UserData data = dataAccess.getUserData(userData.username());
+
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
