@@ -12,12 +12,11 @@ public class Service {
         this.dataAccess = dataAccess;
     }
 
-    public RegisterResult register(UserData userData) {
+    public AuthData register(UserData userData) {
         try {
-        UserData data = dataAccess.getUserData(userData.username());
-
+        return dataAccess.createUser(userData);
         } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+            return null;
         }
     }
 }

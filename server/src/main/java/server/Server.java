@@ -1,15 +1,29 @@
 package server;
 
+import dataaccess.MemoryDataAccess;
 import io.javalin.*;
 import com.google.gson.Gson;
 import io.javalin.http.Context;
+import model.*;
+import service.Service;
 
 public class Server {
 
     private final Javalin javalin;
+    private final Service service;
 
     public Server() {
-        javalin = Javalin.create(config -> config.staticFiles.add("web"));
+
+        this.service = new Service(new MemoryDataAccess());
+
+        javalin = Javalin.create(config -> config.staticFiles.add("web"))
+                .post("/user", this::registration)
+                .post("/session", this::login)
+                .delete("/session", this::logout)
+                .get("/game", this::listGames)
+                .post("/game", this::createGame)
+                .put("/game", this::joinGame)
+                .delete("/db", this::clear);
 
         // Register your endpoints and exception handlers here.
 
@@ -26,8 +40,17 @@ public class Server {
 
     private void registration(Context ctx) {
         //eats a JSON that has a username, password, and email
+        UserData user = new Gson().fromJson(ctx.body(), UserData.class);
         //Handler makes sure the JSON is good
         //Give information to service to register
+        AuthData data = service.register(user);
+        if (data != null) {
+            ctx.result(new Gson().toJson(data));
+            ctx.status(200);
+        } else {
+            ctx.status(403);
+            ctx.result("{\"message\":\"Error: username already taken\"}");
+        }
         //change ctx.result to a JSON with the username and authtoken
 //        Success response 	[200] { "username":"", "authToken":"" }
 //        Failure response 	[400] { "message": "Error: bad request" }

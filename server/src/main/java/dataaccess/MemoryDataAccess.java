@@ -17,11 +17,8 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     public UserData getUserData(String username) throws DataAccessException {
-        UserData data = userDataSet.get(username);
-        if (data == null) {
-            throw new DataAccessException("User does not exist");
-        }
-        return data;
+        return userDataSet.get(username);
+
     }
 
     public AuthData createUser(UserData inputUserData) throws DataAccessException {
@@ -30,7 +27,7 @@ public class MemoryDataAccess implements DataAccess {
             throw new DataAccessException("Username already taken");
         }
         userDataSet.put(inputUsername, inputUserData);
-        //code below could be turned into it's own method later
+        //code below could be turned into its own method later
         AuthData registerResult = new AuthData(generateToken(), inputUsername);
         authDataSet.put(registerResult.authToken(), registerResult.username());
         return registerResult;
