@@ -24,7 +24,7 @@ public class MemoryDataAccess implements DataAccess {
     public AuthData createUser(UserData inputUserData) throws DataAccessException {
         String inputUsername = inputUserData.username();
         if (userDataSet.containsKey(inputUsername)) {
-            throw new DataAccessException("Username already taken");
+            throw new DataAccessException("username already taken");
         }
         userDataSet.put(inputUsername, inputUserData);
         //code below could be turned into its own method later

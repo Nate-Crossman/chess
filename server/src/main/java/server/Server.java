@@ -1,5 +1,6 @@
 package server;
 
+import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import io.javalin.*;
 import com.google.gson.Gson;
@@ -47,13 +48,16 @@ public class Server {
         }
         //Handler makes sure the JSON is good
         //Give information to service to register
-        AuthData data = service.register(user);
-        if (data != null) {
-            ctx.result(new Gson().toJson(data));
-            ctx.status(200);
-        } else {
-            ctx.status(403);
-            ctx.result("{\"message\":\"Error: username already taken\"}");
+        try {
+            AuthData data = service.register(user);
+            if (data != null) {
+                ctx.result(new Gson().toJson(data));
+                ctx.status(200);
+            }
+        } catch (DataAccessException e) {
+            handleException(ctx, e, 403);
+        } catch (Exception e) {
+            handleException(ctx, e, 500);
         }
         //change ctx.result to a JSON with the username and authtoken
 //        Success response 	[200] { "username":"", "authToken":"" }
@@ -113,5 +117,10 @@ public class Server {
     private void handleBadRequest(Context ctx) {
         ctx.status(400);
         ctx.result("{\"message\":\"Error: bad request\"}");
+    }
+
+    private void handleException(Context ctx, Exception e, int statusNumber) {
+        ctx.status(statusNumber);
+        ctx.result("{\"message\":\"Error: " + e.getMessage() + "\"}");
     }
 }
