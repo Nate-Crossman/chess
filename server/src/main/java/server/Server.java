@@ -41,6 +41,10 @@ public class Server {
     private void registration(Context ctx) {
         //eats a JSON that has a username, password, and email
         UserData user = new Gson().fromJson(ctx.body(), UserData.class);
+        if (!user.isValidUserData()) {
+            handleBadRequest(ctx);
+            return;
+        }
         //Handler makes sure the JSON is good
         //Give information to service to register
         AuthData data = service.register(user);
@@ -104,5 +108,10 @@ public class Server {
         service.clear();
         ctx.status(200);
         ctx.result("{}");
+    }
+
+    private void handleBadRequest(Context ctx) {
+        ctx.status(400);
+        ctx.result("{\"message\":\"Error: bad request\"}");
     }
 }
