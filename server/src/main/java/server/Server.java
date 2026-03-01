@@ -101,6 +101,8 @@ public class Server {
     }
 
     private void clear(Context ctx) {
-        //rip and tear until it is done
+        service.clear();
+        ctx.status(200);
+        ctx.result("{}");
     }
 }

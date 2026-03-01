@@ -19,4 +19,10 @@ public class Service {
             return null;
         }
     }
+
+    public void clear() {
+        dataAccess.clearAuthData();
+        dataAccess.clearUserData();
+        dataAccess.clearGameData();
+    }
 }

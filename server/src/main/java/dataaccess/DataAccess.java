@@ -9,5 +9,17 @@ public interface DataAccess {
 
     AuthData createUser(UserData userData) throws DataAccessException;
 //
-//    void removeUserData() throws DataAccessException;
+
+
+//    boolean verifyAuthData(AuthData authData);
+//
+//    boolean removeAuthData(AuthData authdata);
+
+    void clearAuthData();
+
+    void clearUserData();
+
+    void clearGameData();
+
+
 }
