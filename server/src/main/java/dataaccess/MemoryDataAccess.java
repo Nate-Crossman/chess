@@ -16,19 +16,27 @@ public class MemoryDataAccess implements DataAccess {
         return UUID.randomUUID().toString();
     }
 
-    public UserData getUserData(String username) throws DataAccessException {
-        return userDataSet.get(username);
+    public UserData getUserData(String username) throws BadRequestException {
+        if (userDataSet.containsKey(username)) {
+            return userDataSet.get(username);
+        }
+        throw new BadRequestException("bad request");
+
 
     }
 
-    public AuthData createUser(UserData inputUserData) throws DataAccessException {
+    public AuthData createUser(UserData inputUserData) throws AlreadyTakenException {
         String inputUsername = inputUserData.username();
         if (userDataSet.containsKey(inputUsername)) {
-            throw new DataAccessException("username already taken");
+            throw new AlreadyTakenException("username already taken");
         }
         userDataSet.put(inputUsername, inputUserData);
         //code below could be turned into its own method later
-        AuthData registerResult = new AuthData(generateToken(), inputUsername);
+        return createAuthData(inputUsername);
+    }
+
+    public AuthData createAuthData(String username) {
+        AuthData registerResult = new AuthData(generateToken(), username);
         authDataSet.put(registerResult.authToken(), registerResult.username());
         return registerResult;
     }

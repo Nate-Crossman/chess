@@ -1,7 +1,6 @@
 package server;
 
-import dataaccess.DataAccessException;
-import dataaccess.MemoryDataAccess;
+import dataaccess.*;
 import io.javalin.*;
 import com.google.gson.Gson;
 import io.javalin.http.Context;
@@ -54,7 +53,7 @@ public class Server {
                 ctx.result(new Gson().toJson(data));
                 ctx.status(200);
             }
-        } catch (DataAccessException e) {
+        } catch (AlreadyTakenException e) {
             handleException(ctx, e, 403);
         } catch (Exception e) {
             handleException(ctx, e, 500);
@@ -67,10 +66,23 @@ public class Server {
     }
 
     private void login(Context ctx) {
+        LoginRequest loginRequest = new Gson().fromJson(ctx.body(), LoginRequest.class);
         //eats a JSON with username and password
-        //Handler makes sure JSON is well behaved
-        //give loginRequest to register
-        //return ctx.result to username and authToken or die trying
+        if (!loginRequest.isValidLoginRequest()) {
+            handleBadRequest(ctx);
+            return;
+        }
+        try {
+            AuthData data = service.login(loginRequest);
+            ctx.result(new Gson().toJson(data));
+            ctx.status(200);
+        } catch (BadRequestException e) {
+            handleException(ctx, e, 400);
+        } catch (DataAccessException e) {
+            handleException(ctx, e, 401);
+        } catch (Exception e) {
+            handleException(ctx, e, 500);
+        }
 //        Success response 	[200] { "username":"", "authToken":"" }
 //        Failure response 	[400] { "message": "Error: bad request" }
 //        Failure response 	[401] { "message": "Error: unauthorized" }
