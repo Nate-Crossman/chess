@@ -106,6 +106,7 @@ public class Server {
         try {
             String authToken = ctx.header("authorization");
             Collection<GameData> gameList = service.listGames(authToken);
+            ctx.result(new Gson().toJson(gameList));
             ctx.status(200);
         } catch (DataAccessException e) {
             handleException(ctx, e, 401);

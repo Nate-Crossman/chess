@@ -36,16 +36,19 @@ public class Service {
         return (data.username().equals(request.username()) && data.password().equals(request.password()));
     }
 
-    public void logout(String AuthToken) throws DataAccessException {
-        if (dataAccess.verifyAuthData(AuthToken)) {
-            dataAccess.removeAuthData(AuthToken);
+    public void logout(String authToken) throws DataAccessException {
+        if (dataAccess.verifyAuthData(authToken)) {
+            dataAccess.removeAuthData(authToken);
         } else {
             throw new DataAccessException("unauthorized");
         }
     }
 
-    public Collection<GameData> listGames(String AuthToken) throws DataAccessException, BadRequestException {
-        return null;
+    public Collection<GameData> listGames(String authToken) throws DataAccessException, BadRequestException {
+        if (dataAccess.verifyAuthData(authToken)) {
+            return dataAccess.listGames();
+        }
+        throw new DataAccessException("unauthorized");
     }
 
     public void clear() {

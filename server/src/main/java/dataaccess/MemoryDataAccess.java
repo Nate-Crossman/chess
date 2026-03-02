@@ -2,10 +2,7 @@ package dataaccess;
 
 import model.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 
 public class MemoryDataAccess implements DataAccess {
     HashMap<String, UserData> userDataSet = new HashMap<String, UserData>();
@@ -45,6 +42,10 @@ public class MemoryDataAccess implements DataAccess {
 
     public void removeAuthData(String authToken) {
         authDataSet.remove(authToken);
+    }
+
+    public Collection<GameData> listGames() {
+        return gameDataSet.values();
     }
 
     public void clearAuthData() {

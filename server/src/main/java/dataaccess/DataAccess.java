@@ -3,6 +3,8 @@ package dataaccess;
 
 import model.*;
 
+import java.util.Collection;
+
 public interface DataAccess {
     //List out things we'll need for data access, create, read, update, delete
     UserData getUserData(String username) throws DataAccessException;
@@ -14,6 +16,8 @@ public interface DataAccess {
     boolean verifyAuthData(String authToken);
 //
     void removeAuthData(String authToken);
+
+    Collection<GameData> listGames();
 
     void clearAuthData();
 
