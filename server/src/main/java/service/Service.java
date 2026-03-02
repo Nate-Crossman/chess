@@ -51,6 +51,24 @@ public class Service {
         throw new DataAccessException("unauthorized");
     }
 
+    public int createGame(String authToken, CreateGameRequest request) throws DataAccessException, BadRequestException {
+        authorizationCheck(authToken);
+        createGameRequestCheck(request);
+        return dataAccess.createGame(request.gameName());
+    }
+
+    private void authorizationCheck(String authToken) throws DataAccessException {
+        if (!dataAccess.verifyAuthData(authToken)) {
+            throw new DataAccessException("unauthorized");
+        }
+    }
+
+    private void createGameRequestCheck(CreateGameRequest request) throws BadRequestException {
+        if (!request.isValidGameRequest()) {
+            throw new BadRequestException("bad request");
+        }
+    }
+
     public void clear() {
         dataAccess.clearAuthData();
         dataAccess.clearUserData();

@@ -120,10 +120,19 @@ public class Server {
 
 
     private void createGame(Context ctx) {
-        //eat JSON with authtoken and name of your new minecraft world
-        //It's handling time
-        //ask your friend service to make the minecraft server
-        //give ctx.result the gameID and coords to the nearest end portal
+        try {
+            String authToken = ctx.header("authorization");
+            CreateGameRequest gameRequest = new Gson().fromJson(ctx.body(), CreateGameRequest.class);
+            int gameID = service.createGame(authToken, gameRequest);
+            ctx.result("{\"gameID\": \"" + gameID + "\"}");
+            ctx.status(200);
+        } catch (BadRequestException e) {
+            handleException(ctx, e, 400);
+        } catch (DataAccessException e) {
+            handleException(ctx, e, 401);
+        } catch (Exception e) {
+            handleException(ctx, e, 500);
+        }
     }
 
     private void joinGame(Context ctx) {

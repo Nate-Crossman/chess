@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.*;
 
 import java.util.*;
@@ -8,6 +9,7 @@ public class MemoryDataAccess implements DataAccess {
     HashMap<String, UserData> userDataSet = new HashMap<String, UserData>();
     HashMap<String,GameData> gameDataSet = new HashMap<String, GameData>();
     HashMap<String, String> authDataSet = new HashMap<String, String>();
+    int gameIDCounter = 1;
 
     private static String generateToken() {
         return UUID.randomUUID().toString();
@@ -46,6 +48,14 @@ public class MemoryDataAccess implements DataAccess {
 
     public Collection<GameData> listGames() {
         return gameDataSet.values();
+    }
+
+    public int createGame(String gameName) {
+        int gameID = gameIDCounter;
+        gameIDCounter++;
+        GameData data = new GameData(gameID,null, null, gameName, new ChessGame());
+        gameDataSet.put(String.format("%04d",gameID), data);
+        return gameID;
     }
 
     public void clearAuthData() {

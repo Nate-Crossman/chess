@@ -19,6 +19,8 @@ public interface DataAccess {
 
     Collection<GameData> listGames();
 
+    int createGame(String gameName);
+
     void clearAuthData();
 
     void clearUserData();
