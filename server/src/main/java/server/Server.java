@@ -106,7 +106,7 @@ public class Server {
         try {
             String authToken = ctx.header("authorization");
             Collection<GameData> gameList = service.listGames(authToken);
-            ctx.result(new Gson().toJson(gameList));
+            ctx.result("{\"games\": " + new Gson().toJson(gameList) + "}");
             ctx.status(200);
         } catch (DataAccessException e) {
             handleException(ctx, e, 401);
@@ -136,7 +136,20 @@ public class Server {
     }
 
     private void joinGame(Context ctx) {
-
+        try {
+            String authToken = ctx.header("authorization");
+            JoinGameRequest joinRequest = new Gson().fromJson(ctx.body(), JoinGameRequest.class);
+            service.joinGame(authToken, joinRequest);
+            ctx.status(200);
+        } catch (BadRequestException e) {
+            handleException(ctx, e, 400);
+        } catch (DataAccessException e) {
+            handleException(ctx, e, 401);
+        } catch (AlreadyTakenException e) {
+            handleException(ctx, e, 403);
+        } catch (Exception e) {
+            handleException(ctx, e, 500);
+        }
     }
 
     private void clear(Context ctx) {

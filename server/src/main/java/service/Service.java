@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.AlreadyTakenException;
 import dataaccess.BadRequestException;
 import dataaccess.DataAccess;
@@ -45,10 +46,8 @@ public class Service {
     }
 
     public Collection<GameData> listGames(String authToken) throws DataAccessException, BadRequestException {
-        if (dataAccess.verifyAuthData(authToken)) {
-            return dataAccess.listGames();
-        }
-        throw new DataAccessException("unauthorized");
+        authorizationCheck(authToken);
+        return dataAccess.listGames();
     }
 
     public int createGame(String authToken, CreateGameRequest request) throws DataAccessException, BadRequestException {
@@ -57,17 +56,59 @@ public class Service {
         return dataAccess.createGame(request.gameName());
     }
 
+    private void createGameRequestCheck(CreateGameRequest request) throws BadRequestException {
+        if (!request.isValidGameRequest()) {
+            throw new BadRequestException("bad request");
+        }
+    }
+
+    public void joinGame(String authToken, JoinGameRequest request)
+            throws DataAccessException,
+            BadRequestException,
+            AlreadyTakenException {
+        authorizationCheck(authToken);
+        joinGameRequestCheck(request);
+        String username = dataAccess.getUsername(authToken);
+        GameData game = dataAccess.getGame(request.gameID());
+        game = attemptJoinGame(request, game, username);
+        dataAccess.updateGame(request.gameID(), game);
+
+
+    }
+
+    private void joinGameRequestCheck(JoinGameRequest request) throws BadRequestException {
+        if (!request.isValidJoinGameRequest()) {
+            throw new BadRequestException("bad request");
+        }
+    }
+
+    private GameData attemptJoinGame(JoinGameRequest request, GameData game, String username)
+            throws BadRequestException, AlreadyTakenException {
+        GameData updatedGame;
+        if (game == null) {
+            throw new BadRequestException("bad request");
+        }
+        if (request.playerColor().equals("WHITE")) { //we have already verified this is WHITE or BLACK and not null
+            if (game.whiteUsername() != null) {
+                throw new AlreadyTakenException("already taken");
+            }
+            updatedGame = game.addWhitePlayer(username);
+        } else {
+            if (game.blackUsername() != null) {
+                throw  new AlreadyTakenException("already taken");
+            }
+            updatedGame = game.addBlackPlayer(username);
+        }
+        return updatedGame;
+    }
+
     private void authorizationCheck(String authToken) throws DataAccessException {
         if (!dataAccess.verifyAuthData(authToken)) {
             throw new DataAccessException("unauthorized");
         }
     }
 
-    private void createGameRequestCheck(CreateGameRequest request) throws BadRequestException {
-        if (!request.isValidGameRequest()) {
-            throw new BadRequestException("bad request");
-        }
-    }
+
 
     public void clear() {
         dataAccess.clearAuthData();

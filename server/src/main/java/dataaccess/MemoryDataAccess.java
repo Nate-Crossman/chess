@@ -58,6 +58,24 @@ public class MemoryDataAccess implements DataAccess {
         return gameID;
     }
 
+    public GameData getGame(int gameID) {
+        String gameIDkey = String.format("%04d",gameID);
+        if (gameDataSet.containsKey(gameIDkey)) {
+            return gameDataSet.get(gameIDkey);
+        }
+        return null;
+    }
+
+    public void updateGame(int gameID, GameData gameData) {
+        String gameIDkey = String.format("%04d",gameID);
+        gameDataSet.remove(gameIDkey);
+        gameDataSet.put(gameIDkey, gameData);
+    }
+
+    public String getUsername(String authToken) {
+        return authDataSet.get(authToken);
+    }
+
     public void clearAuthData() {
         authDataSet.clear();
     }

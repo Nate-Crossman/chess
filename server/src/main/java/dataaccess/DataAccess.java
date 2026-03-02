@@ -21,6 +21,12 @@ public interface DataAccess {
 
     int createGame(String gameName);
 
+    GameData getGame(int gameID);
+
+    void updateGame(int gameID, GameData gameData);
+
+    String getUsername(String authToken);
+
     void clearAuthData();
 
     void clearUserData();
