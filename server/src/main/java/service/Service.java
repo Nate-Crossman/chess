@@ -6,6 +6,8 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import model.*;
 
+import java.util.Collection;
+
 public class Service {
 
     private final DataAccess dataAccess;
@@ -14,7 +16,7 @@ public class Service {
         this.dataAccess = dataAccess;
     }
 
-    public AuthData register(UserData userData) throws AlreadyTakenException {
+    public AuthData register(UserData userData) throws AlreadyTakenException, BadRequestException {
 //        try {
         return dataAccess.createUser(userData);
 //        } catch (DataAccessException e) {
@@ -32,6 +34,18 @@ public class Service {
 
     private boolean isValidPassword(LoginRequest request, UserData data) {
         return (data.username().equals(request.username()) && data.password().equals(request.password()));
+    }
+
+    public void logout(String AuthToken) throws DataAccessException {
+        if (dataAccess.verifyAuthData(AuthToken)) {
+            dataAccess.removeAuthData(AuthToken);
+        } else {
+            throw new DataAccessException("unauthorized");
+        }
+    }
+
+    public Collection<GameData> listGames(String AuthToken) throws DataAccessException, BadRequestException {
+        return null;
     }
 
     public void clear() {

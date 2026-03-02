@@ -16,13 +16,11 @@ public class MemoryDataAccess implements DataAccess {
         return UUID.randomUUID().toString();
     }
 
-    public UserData getUserData(String username) throws BadRequestException {
+    public UserData getUserData(String username) throws DataAccessException {
         if (userDataSet.containsKey(username)) {
             return userDataSet.get(username);
         }
-        throw new BadRequestException("bad request");
-
-
+        throw new DataAccessException("unauthorized");
     }
 
     public AuthData createUser(UserData inputUserData) throws AlreadyTakenException {
@@ -41,8 +39,12 @@ public class MemoryDataAccess implements DataAccess {
         return registerResult;
     }
 
-    public boolean verifyAuthData(AuthData authData) {
-        return false;
+    public boolean verifyAuthData(String authToken) {
+        return authDataSet.containsKey(authToken);
+    }
+
+    public void removeAuthData(String authToken) {
+        authDataSet.remove(authToken);
     }
 
     public void clearAuthData() {

@@ -7,6 +7,8 @@ import io.javalin.http.Context;
 import model.*;
 import service.Service;
 
+import java.util.Collection;
+
 public class Server {
 
     private final Javalin javalin;
@@ -40,14 +42,12 @@ public class Server {
 
     private void registration(Context ctx) {
         //eats a JSON that has a username, password, and email
-        UserData user = new Gson().fromJson(ctx.body(), UserData.class);
-        if (!user.isValidUserData()) {
-            handleBadRequest(ctx);
-            return;
-        }
-        //Handler makes sure the JSON is good
-        //Give information to service to register
         try {
+            UserData user = new Gson().fromJson(ctx.body(), UserData.class);
+            if (!user.isValidUserData()) {
+                handleBadRequest(ctx);
+                return;
+            }
             AuthData data = service.register(user);
             if (data != null) {
                 ctx.result(new Gson().toJson(data));
@@ -66,16 +66,17 @@ public class Server {
     }
 
     private void login(Context ctx) {
-        LoginRequest loginRequest = new Gson().fromJson(ctx.body(), LoginRequest.class);
-        //eats a JSON with username and password
-        if (!loginRequest.isValidLoginRequest()) {
-            handleBadRequest(ctx);
-            return;
-        }
         try {
-            AuthData data = service.login(loginRequest);
-            ctx.result(new Gson().toJson(data));
-            ctx.status(200);
+            LoginRequest loginRequest = new Gson().fromJson(ctx.body(), LoginRequest.class);
+            //eats a JSON with username and password
+            if (!loginRequest.isValidLoginRequest()) {
+                handleBadRequest(ctx);
+                return;
+            }
+
+                AuthData data = service.login(loginRequest);
+                ctx.result(new Gson().toJson(data));
+                ctx.status(200);
         } catch (BadRequestException e) {
             handleException(ctx, e, 400);
         } catch (DataAccessException e) {
@@ -90,24 +91,32 @@ public class Server {
     }
 
     private void logout(Context ctx) {
-        //eats JSON with authToken
-        //Handler does it's thing
-        //Call the service for a hitman
-        //tell the president the mission was a success
-//        [200] {}
-//        Failure response 	[401] { "message": "Error: unauthorized" }
-//        Failure response 	[500] { "message": "Error: (description of error)" }
+        try {
+            String authToken = ctx.header("authorization");
+            service.logout(authToken);
+            ctx.status(200);
+        } catch (DataAccessException e) {
+            handleException(ctx, e, 401);
+        } catch (Exception e) {
+            handleException(ctx, e, 500);
+        }
     }
 
     private void listGames(Context ctx) {
-        //eat JSON with authToes
-        //handler handles all over the place
-        //ask service unlimited bacon but no games or games,unlimited games but no games
-        //ctx.result your list of games
+        try {
+            String authToken = ctx.header("authorization");
+            Collection<GameData> gameList = service.listGames(authToken);
+            ctx.status(200);
+        } catch (DataAccessException e) {
+            handleException(ctx, e, 401);
+        } catch (Exception e) {
+            handleException(ctx, e, 500);
+        }
+    }
 //        Success response 	[200] { "games": [{"gameID": 1234, "whiteUsername":"", "blackUsername":"", "gameName:""} ]}
 //            Failure response 	[401] { "message": "Error: unauthorized" }
 //            Failure response 	[500] { "message": "Error: (description of error)" }
-    }
+
 
     private void createGame(Context ctx) {
         //eat JSON with authtoken and name of your new minecraft world

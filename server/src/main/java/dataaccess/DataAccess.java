@@ -5,16 +5,15 @@ import model.*;
 
 public interface DataAccess {
     //List out things we'll need for data access, create, read, update, delete
-    UserData getUserData(String username) throws BadRequestException;
+    UserData getUserData(String username) throws DataAccessException;
 
     AuthData createUser(UserData userData) throws AlreadyTakenException;
 //
     AuthData createAuthData(String username);
 
-
-//    boolean verifyAuthData(AuthData authData);
+    boolean verifyAuthData(String authToken);
 //
-//    boolean removeAuthData(AuthData authdata);
+    void removeAuthData(String authToken);
 
     void clearAuthData();
 
