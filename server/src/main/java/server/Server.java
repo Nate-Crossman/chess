@@ -27,8 +27,6 @@ public class Server {
                 .put("/game", this::joinGame)
                 .delete("/db", this::clear);
 
-        // Register your endpoints and exception handlers here.
-
     }
 
     public int run(int desiredPort) {
@@ -55,11 +53,6 @@ public class Server {
         } catch (Exception e) {
             handleException(ctx, e, 500);
         }
-        //change ctx.result to a JSON with the username and authtoken
-//        Success response 	[200] { "username":"", "authToken":"" }
-//        Failure response 	[400] { "message": "Error: bad request" }
-//        Failure response 	[403] { "message": "Error: already taken" }
-//        Failure response 	[500] { "message": "Error: (description of error)" }
     }
 
     private void login(Context ctx) {
@@ -102,10 +95,6 @@ public class Server {
             handleException(ctx, e, 500);
         }
     }
-//        Success response 	[200] { "games": [{"gameID": 1234, "whiteUsername":"", "blackUsername":"", "gameName:""} ]}
-//            Failure response 	[401] { "message": "Error: unauthorized" }
-//            Failure response 	[500] { "message": "Error: (description of error)" }
-
 
     private void createGame(Context ctx) {
         try {
