@@ -41,18 +41,15 @@ public class Server {
     }
 
     private void registration(Context ctx) {
-        //eats a JSON that has a username, password, and email
         try {
             UserData user = new Gson().fromJson(ctx.body(), UserData.class);
-            if (!user.isValidUserData()) {
-                handleBadRequest(ctx);
-                return;
-            }
             AuthData data = service.register(user);
             if (data != null) {
                 ctx.result(new Gson().toJson(data));
                 ctx.status(200);
             }
+        } catch (BadRequestException e) {
+            handleException(ctx, e, 400);
         } catch (AlreadyTakenException e) {
             handleException(ctx, e, 403);
         } catch (Exception e) {
@@ -69,11 +66,6 @@ public class Server {
         try {
             LoginRequest loginRequest = new Gson().fromJson(ctx.body(), LoginRequest.class);
             //eats a JSON with username and password
-            if (!loginRequest.isValidLoginRequest()) {
-                handleBadRequest(ctx);
-                return;
-            }
-
                 AuthData data = service.login(loginRequest);
                 ctx.result(new Gson().toJson(data));
                 ctx.status(200);
@@ -84,10 +76,6 @@ public class Server {
         } catch (Exception e) {
             handleException(ctx, e, 500);
         }
-//        Success response 	[200] { "username":"", "authToken":"" }
-//        Failure response 	[400] { "message": "Error: bad request" }
-//        Failure response 	[401] { "message": "Error: unauthorized" }
-//        Failure response 	[500] { "message": "Error: (description of error)" }
     }
 
     private void logout(Context ctx) {

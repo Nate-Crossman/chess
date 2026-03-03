@@ -18,19 +18,23 @@ public class Service {
     }
 
     public AuthData register(UserData userData) throws AlreadyTakenException, BadRequestException {
-//        try {
+        if (!userData.isValidUserData()) {
+            throw new BadRequestException("bad request");
+        }
         return dataAccess.createUser(userData);
-//        } catch (DataAccessException e) {
-//            return null;
-//        }
+
     }
 
     public AuthData login(LoginRequest loginRequest) throws DataAccessException, BadRequestException {
-        UserData userData = dataAccess.getUserData(loginRequest.username());
-        if (isValidPassword(loginRequest, userData)) {
-            return dataAccess.createAuthData(loginRequest.username());
+        if (!loginRequest.isValidLoginRequest()) {
+            throw new BadRequestException("bad request");
         }
-        throw new DataAccessException("unauthorized");
+        UserData userData = dataAccess.getUserData(loginRequest.username());
+        if (!isValidPassword(loginRequest, userData)) {
+            throw new DataAccessException("unauthorized");
+        }
+        return dataAccess.createAuthData(loginRequest.username());
+
     }
 
     private boolean isValidPassword(LoginRequest request, UserData data) {
