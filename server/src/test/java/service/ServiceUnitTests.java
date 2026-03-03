@@ -160,9 +160,9 @@ public class ServiceUnitTests {
     public void testCreateGameBadInput() {
         UserData input = new UserData("JohnTest","password","email@email.com");
         AuthData authData = service.register(input);
-        CreateGameRequest FaultyRequest = new CreateGameRequest(null);
+        CreateGameRequest faultyRequest = new CreateGameRequest(null);
         Exception e = Assertions.assertThrows(BadRequestException.class, () -> {
-            service.createGame(authData.authToken(), FaultyRequest);
+            service.createGame(authData.authToken(), faultyRequest);
         });
         Assertions.assertEquals("bad request", e.getMessage());
     }

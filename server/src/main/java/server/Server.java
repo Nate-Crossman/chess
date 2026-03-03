@@ -146,11 +146,6 @@ public class Server {
         ctx.result("{}");
     }
 
-    private void handleBadRequest(Context ctx) {
-        ctx.status(400);
-        ctx.result("{\"message\":\"Error: bad request\"}");
-    }
-
     private void handleException(Context ctx, Exception e, int statusNumber) {
         ctx.status(statusNumber);
         ctx.result("{\"message\":\"Error: " + e.getMessage() + "\"}");
