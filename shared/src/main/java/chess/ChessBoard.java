@@ -95,7 +95,9 @@ public class ChessBoard implements Cloneable {
     //Using a ChessMove, moves the piece from the start position to the end position.
     public void movePiece(ChessMove move) {
         ChessPiece piece = getPiece(move.getStartPosition());
-        if (piece == null) return;
+        if (piece == null) {
+            return;
+        }
         if (move.getPromotionPiece() == null) {
             addPiece(move.getEndPosition(), piece);
         }

@@ -127,7 +127,9 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        if (board.getPiece(startPosition) == null) return null;
+        if (board.getPiece(startPosition) == null) {
+            return null;
+        }
         Collection<ChessMove> allMoves = board.getPiece(startPosition).pieceMoves(board, startPosition);
         TeamColor pieceColor = board.getPiece(startPosition).getTeamColor();
         return safeMoves(board, allMoves, pieceColor);

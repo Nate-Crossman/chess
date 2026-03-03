@@ -92,7 +92,7 @@ public class Service {
         if (game == null) {
             throw new BadRequestException("bad request");
         }
-        if (request.playerColor().equals("WHITE")) { //we have already verified this is WHITE or BLACK and not null
+        if (request.playerColor().equals("WHITE")) {
             if (game.whiteUsername() != null) {
                 throw new AlreadyTakenException("already taken");
             }

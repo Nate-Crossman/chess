@@ -84,9 +84,15 @@ public class ChessPiece implements Cloneable {
 
     // returns true if the position is open for regular movement (empty or enemy piece)
     private boolean validMovePosition(ChessBoard board, ChessPosition position) {
-        if (!validPosition(position)) return false;
-        if (!containsPiece(board, position)) return true;
-        if (isEnemy(board,position)) return true;
+        if (!validPosition(position)) {
+            return false;
+        }
+        if (!containsPiece(board, position)) {
+            return true;
+        }
+        if (isEnemy(board,position)) {
+            return true;
+        }
         return false;
     }
 
@@ -411,8 +417,12 @@ public class ChessPiece implements Cloneable {
         }
         //pawn moves
         if (type == PieceType.PAWN) {
-            if (color == ChessGame.TeamColor.WHITE) return getPawnMoveWhite(board, myPosition);
-            if (color == ChessGame.TeamColor.BLACK) return getPawnMoveBlack(board, myPosition);
+            if (color == ChessGame.TeamColor.WHITE) {
+                return getPawnMoveWhite(board, myPosition);
+            }
+            if (color == ChessGame.TeamColor.BLACK) {
+                return getPawnMoveBlack(board, myPosition);
+            }
         }
         return null;
     }
