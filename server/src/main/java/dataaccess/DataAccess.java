@@ -10,11 +10,11 @@ public interface DataAccess {
     UserData getUserData(String username) throws DataAccessException;
 
     AuthData createUser(UserData userData) throws AlreadyTakenException;
-//
+
     AuthData createAuthData(String username);
 
     boolean verifyAuthData(String authToken);
-//
+
     void removeAuthData(String authToken);
 
     Collection<GameData> listGames();
@@ -32,6 +32,5 @@ public interface DataAccess {
     void clearUserData();
 
     void clearGameData();
-
 
 }
