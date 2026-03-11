@@ -46,5 +46,34 @@ public class DatabaseUnitTests {
         }
     }
 
+    @Test
+    public void testCreateExistingUser() {
+        dataAccess.createUser(testUserData);
+        Exception e = Assertions.assertThrows(AlreadyTakenException.class, () -> {
+            dataAccess.createUser(testUserData);
+        });
+        Assertions.assertEquals("username already taken", e.getMessage());;
+    }
+
+    @Test
+    public void testGetUserData() {
+        dataAccess.createUser(testUserData);
+        try {
+            UserData output = dataAccess.getUserData("JohnTest");
+            Assertions.assertEquals("JohnTest", output.username());
+            Assertions.assertEquals("email@email.com", output.email());
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    public void testGetNonExistingUser() {
+        Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
+            dataAccess.getUserData("JohnTest");
+        });
+        Assertions.assertEquals("username does not exist", e.getMessage());
+    }
+
 
 }

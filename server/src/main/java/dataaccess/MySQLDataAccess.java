@@ -15,16 +15,20 @@ public class MySQLDataAccess implements DataAccess {
 
     public UserData getUserData(String username) throws DataAccessException {
         String statement = createGetUserStatement(username);
-        ResultSet rs = executeStatement(statement);
-        try {
-            String user = rs.getString(0);
-            String password = rs.getString(1);
-            String email = rs.getString(2);
-            return new UserData(user,password,email);
-        } catch (SQLException e) {
-            throw new DataAccessException("unauthorized");
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (!rs.next()) {
+                        throw new DataAccessException("username does not exist");
+                    }
+                    return readUserData(rs);
+                }
+            }
+        } catch (DataAccessException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException();
         }
-
     }
 
     public AuthData createUser(UserData userData) throws AlreadyTakenException {
