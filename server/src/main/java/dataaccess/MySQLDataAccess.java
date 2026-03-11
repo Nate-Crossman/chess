@@ -72,8 +72,9 @@ public class MySQLDataAccess implements DataAccess {
     }
 
     private final String[] clearTablesStatements = {
-            "TRUNCATE TABLE userDataSet"
-            //add clear table data as needed
+            "TRUNCATE TABLE userDataSet",
+            "TRUNCATE TABLE authDataSet",
+            "TRUNCATE TABLE gameDataSet"
     };
 
     private final String[] createTableStrings = {
@@ -93,7 +94,14 @@ PRIMARY KEY (`authToken`)
 )
 """,
             """
-
+CREATE TABLE IF NOT EXISTS gameDataSet (
+`id` int NOT NULL AUTO_INCREMENT,
+`whiteUsername` varchar(255),
+`blackUsername` varchar(255),
+`gameName` varchar(255) NOT NULL,
+`gameJSON` TEXT,
+PRIMARY KEY (`id`)
+)
 """
     };
 
@@ -101,8 +109,8 @@ PRIMARY KEY (`authToken`)
         DatabaseManager.createDatabase();
         try (Connection connection = DatabaseManager.getConnection()) {
             for (String statement : createTableStrings) {
-                try (var preparedStatment = connection.prepareStatement(statement)) {
-                    preparedStatment.executeUpdate();
+                try (var preparedStatement = connection.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
                 }
             }
         } catch (SQLException e) {
