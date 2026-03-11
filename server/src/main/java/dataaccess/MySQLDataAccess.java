@@ -55,20 +55,30 @@ public class MySQLDataAccess implements DataAccess {
 
     public void clearUserData() {}
 
-    public void clearGameData() {}
+    public void clearGameData() {
 
-    private String createAddUserStatement(UserData userData) {
-        return """
-                INSERT INTO userDataSet (username, password, email)
-                VALUES ('JohnTest', 'p455word', 'email@example.com')
-                """;
     }
 
-    private String createGetUserStatement() {
-        return """
-                SELECT * FROM userDataSet
-                WHERE username = 'JohnTest'
-                """;
+    private ResultSet executeStatement(String statement) throws DataAccessException {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement(statement, Statement.RETURN_GENERATED_KEYS)) {
+                ps.executeUpdate();
+                return ps.getGeneratedKeys();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Error executing Statement :" + statement);
+        }
+    }
+
+    private String createAddUserStatement(UserData userData) {
+        return "INSERT INTO userDataSet (username, password, email)" +
+                "VALUES ('" + userData.username() +
+                "', '" + userData.password() +
+                "', '" + userData.email() + "')";
+    }
+
+    private String createGetUserStatement(String username) {
+        return "SELECT * FROM userDataSet WHERE username = '" + username + "'";
     }
 
     private final String[] clearTablesStatements = {

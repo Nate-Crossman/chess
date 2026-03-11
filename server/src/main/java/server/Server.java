@@ -15,8 +15,12 @@ public class Server {
     private final Service service;
 
     public Server() {
+        this(new Service(new MemoryDataAccess()));
+    }
 
-        this.service = new Service(new MemoryDataAccess());
+    public Server(Service service) {
+
+        this.service = service;
 
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .post("/user", this::registration)
