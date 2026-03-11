@@ -74,7 +74,16 @@ public class MySQLDataAccess implements DataAccess {
     }
 
     public boolean verifyAuthData(String authToken) {
-        return false;
+        String statement = getAuthDataStatement(authToken);
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    return rs.next();
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
     }
 
     public void removeAuthData(String authToken) {
@@ -139,6 +148,10 @@ public class MySQLDataAccess implements DataAccess {
         return "INSERT INTO authDataSet (authToken, username)" +
                 "VALUES ('" + authData.authToken() +
                 "', '" + authData.username() + "')";
+    }
+
+    private String getAuthDataStatement(String authToken) {
+        return "SELECT * FROM authDataSet WHERE authToken = '" + authToken + "'";
     }
 
     private final String[] clearTablesStatements = {

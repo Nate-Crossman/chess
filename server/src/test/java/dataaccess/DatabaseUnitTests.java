@@ -87,5 +87,16 @@ public class DatabaseUnitTests {
         }
     }
 
+    @Test
+    public void testVerifyAuthData() {
+        AuthData auth = dataAccess.createUser(testUserData);
+        Assertions.assertTrue(dataAccess.verifyAuthData(auth.authToken()));
+    }
+
+    @Test
+    public void testVerifyFalseData() {
+        Assertions.assertFalse(dataAccess.verifyAuthData("badAuthToken"));
+    }
+
 
 }
