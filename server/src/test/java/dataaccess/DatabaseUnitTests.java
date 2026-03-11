@@ -75,5 +75,17 @@ public class DatabaseUnitTests {
         Assertions.assertEquals("username does not exist", e.getMessage());
     }
 
+    @Test
+    public void testCreateAuthData() {
+        try {
+            AuthData output = dataAccess.createAuthData("JohnTest");
+            AuthData output2 = dataAccess.createAuthData("JaneTest");
+            Assertions.assertEquals("JohnTest", output.username());
+            Assertions.assertNotEquals(output.authToken(), output2.authToken());
+        } catch (Exception e) {
+            Assertions.fail();
+        }
+    }
+
 
 }
