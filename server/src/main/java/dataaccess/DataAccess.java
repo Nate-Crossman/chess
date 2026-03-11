@@ -27,10 +27,10 @@ public interface DataAccess {
 
     String getUsername(String authToken);
 
-    void clearAuthData();
+    void clearAuthData()throws DataAccessException;
 
-    void clearUserData();
+    void clearUserData() throws DataAccessException;
 
-    void clearGameData();
+    void clearGameData() throws DataAccessException;
 
 }

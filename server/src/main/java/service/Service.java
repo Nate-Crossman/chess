@@ -115,8 +115,12 @@ public class Service {
 
 
     public void clear() {
-        dataAccess.clearAuthData();
-        dataAccess.clearUserData();
-        dataAccess.clearGameData();
+        try {
+            dataAccess.clearAuthData();
+            dataAccess.clearUserData();
+            dataAccess.clearGameData();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

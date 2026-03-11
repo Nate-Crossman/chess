@@ -3,6 +3,8 @@ package dataaccess;
 import model.*;
 
 import java.sql.*;
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static java.sql.Types.NULL;
 import java.util.Collection;
 
 public class MySQLDataAccess implements DataAccess {
@@ -12,11 +14,23 @@ public class MySQLDataAccess implements DataAccess {
     }
 
     public UserData getUserData(String username) throws DataAccessException {
-        return null;
+        String statement = createGetUserStatement(username);
+        ResultSet rs = executeStatement(statement);
+        try {
+            String user = rs.getString(0);
+            String password = rs.getString(1);
+            String email = rs.getString(2);
+            return new UserData(user,password,email);
+        } catch (SQLException e) {
+            throw new DataAccessException("unauthorized");
+        }
+
     }
 
     public AuthData createUser(UserData userData) throws AlreadyTakenException {
-        return null;
+        String statement = createAddUserStatement(userData);
+        ResultSet rs = executeStatement(statement);
+
     }
 
     public AuthData createAuthData(String username) {
@@ -51,12 +65,16 @@ public class MySQLDataAccess implements DataAccess {
         return null;
     }
 
-    public void clearAuthData() {}
+    public void clearAuthData() throws DataAccessException{
+        executeStatement(clearTablesStatements[0]);
+    }
 
-    public void clearUserData() {}
+    public void clearUserData() throws DataAccessException{
+        executeStatement(clearTablesStatements[1]);
+    }
 
-    public void clearGameData() {
-
+    public void clearGameData() throws DataAccessException {
+        executeStatement(clearTablesStatements[2]);
     }
 
     private ResultSet executeStatement(String statement) throws DataAccessException {
