@@ -159,7 +159,12 @@ public class MySQLDataAccess implements DataAccess {
     }
 
     public void updateGame(int gameID, GameData gameData) {
-
+        String statement = updateGameStatement(gameID, gameData);
+        try {
+            executeStatement(statement);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getUsername(String authToken) {
@@ -219,6 +224,17 @@ public class MySQLDataAccess implements DataAccess {
         String gameJSON = gson.toJson(game);
         return "INSERT INTO gameDataSet (gameName, gameJSON)" +
                 "VALUES ('" + gameName +
+                "', '" + gameJSON + "')";
+    }
+
+    private String updateGameStatement(int gameID, GameData gameData) {
+        Gson gson = new Gson();
+        String gameJSON = gson.toJson(gameData.game());
+        return "REPLACE INTO gameDataSet (id, whiteUsername, blackUsername, gameName, gameJSON)" +
+                "VALUES ('" + gameID +
+                "', '" + gameData.whiteUsername() +
+                "', '" + gameData.blackUsername() +
+                "', '" + gameData.gameName() +
                 "', '" + gameJSON + "')";
     }
 

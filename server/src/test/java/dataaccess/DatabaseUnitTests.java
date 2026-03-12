@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import dataaccess.AlreadyTakenException;
 import dataaccess.BadRequestException;
 import dataaccess.DataAccessException;
@@ -147,5 +148,35 @@ public class DatabaseUnitTests {
         Assertions.assertEquals(2, result.size());
     }
 
+    @Test
+    public void testUpdateGame() {
+        int gameID = dataAccess.createGame("TestGame");
+        GameData gameData = dataAccess.getGame(gameID);
+        GameData changedGame = gameData.addWhitePlayer("JohnTest");
+        changedGame = changedGame.addBlackPlayer("JaneTest");
+        dataAccess.updateGame(gameID, changedGame);
+        GameData result = dataAccess.getGame(gameID);
+        Assertions.assertEquals("JohnTest", result.whiteUsername());
+        Assertions.assertEquals("JaneTest", result.blackUsername());
+    }
 
+    @Test
+    public void testClear() {
+        dataAccess.createUser(testUserData);
+        int id = dataAccess.createGame("Test");
+        try {
+            dataAccess.clearUserData();
+            dataAccess.clearAuthData();
+            dataAccess.clearGameData();
+            GameData result = dataAccess.getGame(id);
+            Assertions.assertNull(result);
+            Exception e = Assertions.assertThrows(DataAccessException.class, () -> {
+                dataAccess.getUserData("JohnTest");
+            });
+            Assertions.assertEquals("username does not exist", e.getMessage());
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+    }
 }
+
