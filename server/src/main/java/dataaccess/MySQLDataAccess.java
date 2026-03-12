@@ -87,7 +87,12 @@ public class MySQLDataAccess implements DataAccess {
     }
 
     public void removeAuthData(String authToken) {
-
+        String statement = removeAuthDataStatement(authToken);
+        try {
+            executeStatement(statement);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Collection<GameData> listGames() {
@@ -152,6 +157,10 @@ public class MySQLDataAccess implements DataAccess {
 
     private String getAuthDataStatement(String authToken) {
         return "SELECT * FROM authDataSet WHERE authToken = '" + authToken + "'";
+    }
+
+    private String removeAuthDataStatement(String authToken) {
+        return "DELETE FROM authDataSet WHERE authToken = '" + authToken + "'";
     }
 
     private final String[] clearTablesStatements = {

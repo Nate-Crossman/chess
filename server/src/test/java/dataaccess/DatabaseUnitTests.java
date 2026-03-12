@@ -98,5 +98,12 @@ public class DatabaseUnitTests {
         Assertions.assertFalse(dataAccess.verifyAuthData("badAuthToken"));
     }
 
+    @Test
+    public void testRemoveAuthData() {
+        AuthData auth = dataAccess.createUser(testUserData);
+        dataAccess.removeAuthData(auth.authToken());
+        Assertions.assertFalse(dataAccess.verifyAuthData(auth.authToken()));
+    }
+
 
 }
