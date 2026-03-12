@@ -1,5 +1,7 @@
 package dataaccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import model.*;
 
 import java.sql.*;
@@ -96,14 +98,63 @@ public class MySQLDataAccess implements DataAccess {
     }
 
     public Collection<GameData> listGames() {
-        return null;
+        Collection<GameData> output = new HashSet<GameData>();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            String statement = "SELECT * FROM gameDataSet";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        output.add(readGameData(rs));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+        return output;
+    }
+
+    private GameData readGameData(ResultSet rs) throws SQLException {
+        var gameID = rs.getInt("id");
+        var whiteUsername = rs.getString("whiteUsername");
+        var blackUsername = rs.getString("blackUsername");
+        var gameName = rs.getString("gameName");
+        var json = rs.getString("gameJSON");
+        ChessGame game = new Gson().fromJson(json, ChessGame.class);
+        return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
     }
 
     public int createGame(String gameName) {
-        return 0;
+        ChessGame game = new ChessGame();
+        String statement = createGameStatement(gameName, game);
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                ps.executeUpdate();
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+
+                return 0;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
     }
 
     public GameData getGame(int gameID) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            String statement = "SELECT * FROM gameDataSet WHERE id=" + gameID;
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readGameData(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
         return null;
     }
 
@@ -161,6 +212,14 @@ public class MySQLDataAccess implements DataAccess {
 
     private String removeAuthDataStatement(String authToken) {
         return "DELETE FROM authDataSet WHERE authToken = '" + authToken + "'";
+    }
+
+    private String createGameStatement(String gameName, ChessGame game) {
+        Gson gson = new Gson();
+        String gameJSON = gson.toJson(game);
+        return "INSERT INTO gameDataSet (gameName, gameJSON)" +
+                "VALUES ('" + gameName +
+                "', '" + gameJSON + "')";
     }
 
     private final String[] clearTablesStatements = {

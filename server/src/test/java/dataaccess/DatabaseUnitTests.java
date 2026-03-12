@@ -105,5 +105,47 @@ public class DatabaseUnitTests {
         Assertions.assertFalse(dataAccess.verifyAuthData(auth.authToken()));
     }
 
+    @Test
+    public void testCreateGame() {
+        try {
+            int id = dataAccess.createGame("TestGame");
+            Assertions.assertTrue( id != 0);
+        } catch (Exception e) {
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    public void testGetGame() {
+        try {
+            ChessGame expected = new ChessGame();
+            int id = dataAccess.createGame("TestGame");
+            GameData data = dataAccess.getGame(id);
+            Assertions.assertEquals(expected, data.game());
+        } catch (Exception e) {
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    public void testGetNonExistingGame() {
+        GameData result = dataAccess.getGame(404);
+        Assertions.assertNull(result);
+    }
+
+    @Test
+    public void testListGamesEmpty() {
+        Collection<GameData> result = dataAccess.listGames();
+        Assertions.assertEquals(0, result.size());
+    }
+
+    @Test
+    public void testListGames() {
+        int game1 = dataAccess.createGame("game1");
+        int game2 = dataAccess.createGame("game2");
+        Collection<GameData> result = dataAccess.listGames();
+        Assertions.assertEquals(2, result.size());
+    }
+
 
 }
