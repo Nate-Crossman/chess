@@ -134,12 +134,21 @@ public class Server {
     }
 
     private void clear(Context ctx) {
-        service.clear();
-        ctx.status(200);
-        ctx.result("{}");
+        try {
+            service.clear();
+            ctx.status(200);
+            ctx.result("{}");
+        } catch (Exception e) {
+            handleException(ctx, e, 500);
+        }
     }
 
     private void handleException(Context ctx, Exception e, int statusNumber) {
+        if (e.getMessage().equals("failed to get connection") |
+        e.getMessage().equals("Unable to load db.properties") |
+        e.getMessage().equals("unable to process db.properties")) {
+            statusNumber = 500;
+        }
         ctx.status(statusNumber);
         ctx.result("{\"message\":\"Error: " + e.getMessage() + "\"}");
     }
