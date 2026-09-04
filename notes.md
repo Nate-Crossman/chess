@@ -1,0 +1,1 @@
+Behold the amazing notes.md file! This will be commited to github using the magic of git commits!
