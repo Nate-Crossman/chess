@@ -34,6 +34,40 @@ public class ChessPosition {
         return this.col;
     }
 
+    //Position functions for piece movement
+
+    public ChessPosition getNorthPostion() {
+        return new ChessPosition(row+1,col);
+    }
+
+    public ChessPosition getNorthEastPostion() {
+        return new ChessPosition(row+1,col+1);
+    }
+
+    public ChessPosition getEastPostion() {
+        return new ChessPosition(row,col+1);
+    }
+
+    public ChessPosition getSouthEastPostion() {
+        return new ChessPosition(row-1,col+1);
+    }
+
+    public ChessPosition getSouthPostion() {
+        return new ChessPosition(row-1,col);
+    }
+
+    public ChessPosition getSouthWestPostion() {
+        return new ChessPosition(row-1,col-1);
+    }
+
+    public ChessPosition getWestPostion() {
+        return new ChessPosition(row,col-1);
+    }
+
+    public ChessPosition getNorthWestPostion() {
+        return new ChessPosition(row+1,col-1);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
