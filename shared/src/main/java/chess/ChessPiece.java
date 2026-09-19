@@ -143,6 +143,30 @@ public class ChessPiece {
 
     private Collection<ChessMove> getKnightMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> output = new HashSet<>();
+        if (isPositionValidMove(board, myPosition.getUpUpRightPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getUpUpRightPostion(), null));
+        }
+        if (isPositionValidMove(board, myPosition.getUpRightRightPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getUpRightRightPostion(), null));
+        }
+        if (isPositionValidMove(board, myPosition.getDownRightRighthPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getDownRightRighthPostion(), null));
+        }
+        if (isPositionValidMove(board, myPosition.getDownDownRightPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getDownDownRightPostion(), null));
+        }
+        if (isPositionValidMove(board, myPosition.getDownDownLeftPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getDownDownLeftPostion(), null));
+        }
+        if (isPositionValidMove(board, myPosition.getDownLeftLeftPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getDownLeftLeftPostion(), null));
+        }
+        if (isPositionValidMove(board, myPosition.getUpLeftLeftPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getUpLeftLeftPostion(), null));
+        }
+        if (isPositionValidMove(board, myPosition.getUpUpLeftPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getUpUpLeftPostion(), null));
+        }
         return output;
     }
 
