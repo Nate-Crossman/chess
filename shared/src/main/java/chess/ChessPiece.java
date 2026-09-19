@@ -116,6 +116,76 @@ public class ChessPiece {
         }
     }
 
+    private void recMoveNorthEast(ChessBoard board,
+                              ChessPosition start,
+                              ChessPosition position,
+                              Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getNorthEastPostion();
+        if (recMoveHandler(board, start, newPosition, output)) {
+            recMoveNorthEast(board, start, newPosition, output);
+        }
+    }
+
+    private void recMoveEast(ChessBoard board,
+                              ChessPosition start,
+                              ChessPosition position,
+                              Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getEastPostion();
+        if (recMoveHandler(board, start, newPosition, output)) {
+            recMoveEast(board, start, newPosition, output);
+        }
+    }
+
+    private void recMoveSouthEast(ChessBoard board,
+                              ChessPosition start,
+                              ChessPosition position,
+                              Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getSouthEastPostion();
+        if (recMoveHandler(board, start, newPosition, output)) {
+            recMoveSouthEast(board, start, newPosition, output);
+        }
+    }
+
+    private void recMoveSouth(ChessBoard board,
+                              ChessPosition start,
+                              ChessPosition position,
+                              Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getSouthPostion();
+        if (recMoveHandler(board, start, newPosition, output)) {
+            recMoveSouth(board, start, newPosition, output);
+        }
+    }
+
+    private void recMoveSouthWest(ChessBoard board,
+                              ChessPosition start,
+                              ChessPosition position,
+                              Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getSouthWestPostion();
+        if (recMoveHandler(board, start, newPosition, output)) {
+            recMoveSouthWest(board, start, newPosition, output);
+        }
+    }
+
+    private void recMoveWest(ChessBoard board,
+                              ChessPosition start,
+                              ChessPosition position,
+                              Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getWestPostion();
+        if (recMoveHandler(board, start, newPosition, output)) {
+            recMoveWest(board, start, newPosition, output);
+        }
+    }
+
+    private void recMoveNorthWest(ChessBoard board,
+                              ChessPosition start,
+                              ChessPosition position,
+                              Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getNorthWestPostion();
+        if (recMoveHandler(board, start, newPosition, output)) {
+            recMoveNorthWest(board, start, newPosition, output);
+        }
+    }
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -208,6 +278,9 @@ public class ChessPiece {
     private Collection<ChessMove> getRookMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> output = new HashSet<>();
         recMoveNorth(board, myPosition, myPosition, output);
+        recMoveWest(board, myPosition, myPosition, output);
+        recMoveSouth(board, myPosition, myPosition, output);
+        recMoveEast(board, myPosition, myPosition, output);
         return output;
     }
 
