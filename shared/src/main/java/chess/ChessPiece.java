@@ -74,6 +74,11 @@ public class ChessPiece {
         return false;
     }
 
+//    DOES NOT ACCOUNT FOR SPECIAL PAWN RULES OR CHECKS
+    private boolean isPositionValidMove(ChessBoard board, ChessPosition position) {
+        return (isOnBoard(position) && (isPositionEmpty(board, position) | isPositionEnemy(board, position)));
+    }
+
 
 
     /**
@@ -109,6 +114,30 @@ public class ChessPiece {
 
     private Collection<ChessMove> getKingMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> output = new HashSet<>();
+        if (isPositionValidMove(board, myPosition.getNorthPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getNorthPostion(), null));
+        }
+        if (isPositionValidMove(board, myPosition.getNorthWestPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getNorthWestPostion(), null));
+        }
+        if (isPositionValidMove(board, myPosition.getWestPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getWestPostion(), null));
+        }
+        if (isPositionValidMove(board, myPosition.getSouthWestPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getSouthWestPostion(), null));
+        }
+        if (isPositionValidMove(board, myPosition.getSouthPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getSouthPostion(), null));
+        }
+        if (isPositionValidMove(board, myPosition.getSouthEastPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getSouthEastPostion(), null));
+        }
+        if (isPositionValidMove(board, myPosition.getEastPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getEastPostion(), null));
+        }
+        if (isPositionValidMove(board, myPosition.getNorthEastPostion())) {
+            output.add(new ChessMove(myPosition, myPosition.getNorthEastPostion(), null));
+        }
         return output;
     }
 
