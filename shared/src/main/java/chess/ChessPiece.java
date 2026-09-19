@@ -186,8 +186,21 @@ public class ChessPiece {
         }
     }
 
-    private void attemptPawnAttack() {
-
+    private void attemptPawnAttack(ChessBoard board,
+                                   ChessPosition start,
+                                   ChessPosition newPosition,
+                                   Collection<ChessMove> output,
+                                   int promotionRow) {
+        if (!isOnBoard(newPosition)) {
+            return;
+        }
+        if (isPositionEnemy(board, newPosition)) {
+            if (start.getRow() == promotionRow) {
+                addPromotionMoves(output, start, newPosition);
+            } else {
+                output.add(new ChessMove(start, newPosition, null));
+            }
+        }
     }
 
     private void addPromotionMoves(Collection<ChessMove> output, ChessPosition start, ChessPosition end) {
@@ -353,6 +366,8 @@ public class ChessPiece {
                 && isPositionEmpty(board, regularMove)) {
             output.add(new ChessMove(myPosition, doubleMove, null));
         }
+        attemptPawnAttack(board, myPosition, diagonal1, output, promotionRow);
+        attemptPawnAttack(board, myPosition, diagonal2, output, promotionRow);
 
         return output;
     }
