@@ -46,6 +46,36 @@ public class ChessPiece {
         return this.type;
     }
 
+    private boolean isOnBoard(ChessPosition position) {
+        if ((position.getRow() < 1) | (8 < position.getRow())) {
+            return false;
+        }
+        if ((position.getColumn() < 1) | (8 < position.getColumn())) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isPositionEmpty(ChessBoard board, ChessPosition position) {
+        return (board.getPiece(position) == null);
+    }
+
+    private boolean isPositionEnemy(ChessBoard board, ChessPosition position) {
+        if (isPositionEmpty(board,position)) {
+            return false;
+        }
+        ChessGame.TeamColor otherColor = board.getPiece(position).getTeamColor();
+        if (pieceColor == ChessGame.TeamColor.WHITE && otherColor == ChessGame.TeamColor.BLACK) {
+            return true;
+        }
+        if (pieceColor == ChessGame.TeamColor.BLACK && otherColor == ChessGame.TeamColor.WHITE) {
+            return true;
+        }
+        return false;
+    }
+
+
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
