@@ -286,6 +286,10 @@ public class ChessPiece {
 
     private Collection<ChessMove> getBishopMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> output = new HashSet<>();
+        recMoveNorthWest(board, myPosition, myPosition, output);
+        recMoveSouthWest(board, myPosition, myPosition, output);
+        recMoveSouthEast(board, myPosition, myPosition, output);
+        recMoveNorthEast(board, myPosition, myPosition, output);
         return output;
     }
 
