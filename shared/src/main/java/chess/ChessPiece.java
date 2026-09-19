@@ -329,9 +329,13 @@ public class ChessPiece {
             doubleMove = myPosition.getSouthPostion().getSouthPostion();
             regularMove = myPosition.getSouthPostion();
         }
-
         if (isOnBoard(regularMove) && isPositionEmpty(board, regularMove)) {
             output.add(new ChessMove(myPosition, regularMove, null));
+        }
+        if ((myPosition.getRow() == doubleRow)
+                && isPositionEmpty(board, doubleMove)
+                && isPositionEmpty(board, regularMove)) {
+            output.add(new ChessMove(myPosition, doubleMove, null));
         }
 
         return output;
