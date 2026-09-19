@@ -68,6 +68,38 @@ public class ChessPosition {
         return new ChessPosition(row+1,col-1);
     }
 
+    public ChessPosition getUpUpRightPostion() {
+        return new ChessPosition(row+2,col+1);
+    }
+
+    public ChessPosition getUpRightRightPostion() {
+        return new ChessPosition(row+1,col+2);
+    }
+
+    public ChessPosition getDownRightRighthPostion() {
+        return new ChessPosition(row-1,col+2);
+    }
+
+    public ChessPosition getDownDownRightPostion() {
+        return new ChessPosition(row-2,col+1);
+    }
+
+    public ChessPosition getDownDownLeftPostion() {
+        return new ChessPosition(row-2,col-1);
+    }
+
+    public ChessPosition getDownLeftLeftPostion() {
+        return new ChessPosition(row-1,col-2);
+    }
+
+    public ChessPosition getUpLeftLeftPostion() {
+        return new ChessPosition(row+1,col-2);
+    }
+
+    public ChessPosition getUpUpLeftPostion() {
+        return new ChessPosition(row+2,col-1);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
