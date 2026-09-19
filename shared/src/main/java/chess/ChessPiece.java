@@ -69,4 +69,19 @@ public class ChessPiece {
     public int hashCode() {
         return Objects.hash(pieceColor, type);
     }
+
+    @Override
+    public String toString() {
+        String output;
+        switch (type) {
+            case KING -> output = "k";
+            case QUEEN -> output = "q";
+            case BISHOP -> output = "b";
+            case KNIGHT -> output = "h"; // h stands for horse
+            case ROOK -> output = "r";
+            case PAWN -> output = "p";
+            case null, default -> output = " ";
+        }
+        return output;
+    }
 }
