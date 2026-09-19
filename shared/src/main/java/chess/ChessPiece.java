@@ -308,6 +308,32 @@ public class ChessPiece {
 
     private Collection<ChessMove> getPawnMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> output = new HashSet<>();
+        int promotionRow;
+        int doubleRow;
+        ChessPosition diagonal1;
+        ChessPosition diagonal2;
+        ChessPosition doubleMove;
+        ChessPosition regularMove;
+        if (pieceColor == ChessGame.TeamColor.WHITE) {
+            promotionRow = 7;
+            doubleRow = 2;
+            diagonal1 = myPosition.getNorthEastPostion();
+            diagonal2 = myPosition.getNorthWestPostion();
+            doubleMove = myPosition.getNorthPostion().getNorthPostion();
+            regularMove = myPosition.getNorthPostion();
+        } else {
+            promotionRow = 2;
+            doubleRow = 7;
+            diagonal1 = myPosition.getSouthEastPostion();
+            diagonal2 = myPosition.getSouthWestPostion();
+            doubleMove = myPosition.getSouthPostion().getSouthPostion();
+            regularMove = myPosition.getSouthPostion();
+        }
+
+        if (isOnBoard(regularMove) && isPositionEmpty(board, regularMove)) {
+            output.add(new ChessMove(myPosition, regularMove, null));
+        }
+
         return output;
     }
 
