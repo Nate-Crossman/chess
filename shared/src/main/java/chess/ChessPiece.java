@@ -74,12 +74,47 @@ public class ChessPiece {
         return false;
     }
 
+    private boolean isPositionAlly(ChessBoard board, ChessPosition position) {
+        if (!isOnBoard(position)) {
+            return false;
+        }
+        return (!isPositionEmpty(board, position) && !isPositionEnemy(board, position));
+    }
+
+
 //    DOES NOT ACCOUNT FOR SPECIAL PAWN RULES OR CHECKS
     private boolean isPositionValidMove(ChessBoard board, ChessPosition position) {
         return (isOnBoard(position) && (isPositionEmpty(board, position) | isPositionEnemy(board, position)));
     }
 
+    //Rec Move Handler checks if movement can continue and adds the new position to output if possible
+    private boolean recMoveHandler(ChessBoard board,
+                                   ChessPosition start,
+                                   ChessPosition newPosition,
+                                   Collection<ChessMove> output) {
+        // stop and do not add new position
+        if (!isOnBoard(newPosition) | isPositionAlly(board, newPosition)) {
+            return false;
+        }
+        // add new position to output but do not continue
+        if (isPositionEnemy(board, newPosition)) {
+            output.add(new ChessMove(start, newPosition, null));
+            return false;
+        }
+        // add position and proceed
+        output.add(new ChessMove(start, newPosition, null));
+        return true;
+    }
 
+    private void recMoveNorth(ChessBoard board,
+                              ChessPosition start,
+                              ChessPosition position,
+                              Collection<ChessMove> output) {
+        ChessPosition newPosition = position.getNorthPostion();
+        if (recMoveHandler(board, start, newPosition, output)) {
+            recMoveNorth(board, start, newPosition, output);
+        }
+    }
 
     /**
      * Calculates all the positions a chess piece can move to
@@ -172,6 +207,7 @@ public class ChessPiece {
 
     private Collection<ChessMove> getRookMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> output = new HashSet<>();
+        recMoveNorth(board, myPosition, myPosition, output);
         return output;
     }
 
