@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 
 /**
@@ -45,6 +46,19 @@ public class ChessGame {
     public enum TeamColor {
         WHITE,
         BLACK
+    }
+
+    public Collection<ChessMove> getTheoreticalMoves(ChessBoard board, TeamColor color) {
+        Collection<ChessMove> output = new HashSet<ChessMove>();
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                ChessPiece piece = board.getPiece(new ChessPosition(i,j));
+                if (piece != null && piece.getTeamColor() == color) {
+                    output.addAll(piece.pieceMoves(board, new ChessPosition(i,j)));
+                }
+            }
+        }
+        return output;
     }
 
     /**
@@ -105,7 +119,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        this.board = board;
     }
 
     /**
@@ -114,7 +128,7 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return board;
     }
 
     @Override
