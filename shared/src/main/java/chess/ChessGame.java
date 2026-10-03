@@ -106,7 +106,15 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition start = move.getStartPosition();
         ChessPiece piece = board.getPiece(start);
-        if (piece )
+        if (piece != null && isPieceTurn(piece)) {
+            Collection<ChessMove> validMoves = validMoves(start);
+            if (validMoves.contains(move)) {
+                board.makeMove(move);
+                isWhiteTurn = !isWhiteTurn;
+                return;
+            }
+        }
+        throw new InvalidMoveException();
     }
 
     public boolean isPositionEnemyKing(ChessBoard board, ChessPosition position, TeamColor color) {
