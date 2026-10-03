@@ -94,10 +94,12 @@ public class ChessGame {
 
     public boolean isBoardInCheck(ChessBoard board, TeamColor color) {
         Collection<ChessMove> potentialMoves = getTheoreticalMoves(board, color);
-        potentialMoves.forEach(chessMove -> {
+        for (ChessMove chessMove : potentialMoves) {
             ChessPosition end = chessMove.getEndPosition();
-
-        });
+            if (isPositionEnemyKing(board, end, color)) {
+                return true;
+            }
+        };
         return false;
     }
 
