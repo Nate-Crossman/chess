@@ -82,6 +82,25 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
+    public boolean isPositionEnemyKing(ChessBoard board, ChessPosition position, TeamColor color) {
+        ChessPiece piece = board.getPiece(position);
+        if ((piece != null)
+                && (piece.getPieceType() == ChessPiece.PieceType.KING)
+                && (piece.getTeamColor() != color)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isBoardInCheck(ChessBoard board, TeamColor color) {
+        Collection<ChessMove> potentialMoves = getTheoreticalMoves(board, color);
+        potentialMoves.forEach(chessMove -> {
+            ChessPosition end = chessMove.getEndPosition();
+
+        });
+        return false;
+    }
+
     /**
      * Determines if the given team is in check
      *
@@ -89,7 +108,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return isBoardInCheck(this.board, teamColor);
     }
 
     /**
