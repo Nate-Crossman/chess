@@ -67,7 +67,7 @@ public class ChessGame {
             //move is unsafe if making it results in check
             ChessBoard testBoard = new ChessBoard(board);
             testBoard.makeMove(move);
-            if (!isBoardInCheck(board, color)) {
+            if (!isBoardInCheck(testBoard, color)) {
                 safeMoves.add(move);
             }
         }
@@ -86,7 +86,8 @@ public class ChessGame {
         if (piece == null) {
             return null;
         }
-        Collection<ChessMove> theoreticalMoves = getTheoreticalMoves(board, piece.getTeamColor());
+        Collection<ChessMove> potentialMoves = piece.pieceMoves(board, startPosition);
+        return filterSafeMoves(potentialMoves, piece.getTeamColor());
     }
 
     /**
