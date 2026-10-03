@@ -175,7 +175,9 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> moves = getTheoreticalMoves(board, teamColor);
+        moves = filterSafeMoves(moves, teamColor);
+        return (!isInCheck(teamColor) && moves.isEmpty());
     }
 
     /**
