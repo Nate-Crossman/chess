@@ -90,6 +90,13 @@ public class ChessGame {
         return filterSafeMoves(potentialMoves, piece.getTeamColor());
     }
 
+    public boolean isPieceTurn(ChessPiece piece) {
+        if (isWhiteTurn) {
+            return (piece.getTeamColor() == TeamColor.WHITE);
+        }
+        return  (piece.getTeamColor() == TeamColor.BLACK);
+    }
+
     /**
      * Makes a move in the chess game
      *
@@ -97,7 +104,9 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPosition start = move.getStartPosition();
+        ChessPiece piece = board.getPiece(start);
+        if (piece )
     }
 
     public boolean isPositionEnemyKing(ChessBoard board, ChessPosition position, TeamColor color) {
