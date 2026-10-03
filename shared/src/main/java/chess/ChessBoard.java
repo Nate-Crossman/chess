@@ -29,6 +29,14 @@ public class ChessBoard {
         }
     }
 
+    //makeMove does not check if move is valid
+    public void makeMove(ChessMove move) {
+        ChessPiece piece = getPiece(move.getStartPosition());
+        ChessPosition end = move.getEndPosition();
+        addPiece(end, piece);
+        addPiece(move.getStartPosition(), null);
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *
