@@ -92,11 +92,18 @@ public class ChessGame {
         return false;
     }
 
+    public TeamColor getOppositeColor(TeamColor color) {
+        if (color == TeamColor.WHITE) {
+            return TeamColor.BLACK;
+        }
+        return TeamColor.WHITE;
+    }
+
     public boolean isBoardInCheck(ChessBoard board, TeamColor color) {
-        Collection<ChessMove> potentialMoves = getTheoreticalMoves(board, color);
+        Collection<ChessMove> potentialMoves = getTheoreticalMoves(board, getOppositeColor(color));
         for (ChessMove chessMove : potentialMoves) {
             ChessPosition end = chessMove.getEndPosition();
-            if (isPositionEnemyKing(board, end, color)) {
+            if (isPositionEnemyKing(board, end, getOppositeColor(color))) {
                 return true;
             }
         };
