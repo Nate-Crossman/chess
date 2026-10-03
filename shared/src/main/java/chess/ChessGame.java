@@ -61,6 +61,19 @@ public class ChessGame {
         return output;
     }
 
+    public Collection<ChessMove> filterSafeMoves(Collection<ChessMove> moves, TeamColor color) {
+        Collection<ChessMove> safeMoves = new HashSet<ChessMove>();
+        for (ChessMove move : moves) {
+            //move is unsafe if making it results in check
+            ChessBoard testBoard = new ChessBoard(board);
+            testBoard.makeMove(move);
+            if (!isBoardInCheck(board, color)) {
+                safeMoves.add(move);
+            }
+        }
+        return safeMoves;
+    }
+
     /**
      * Gets all valid moves for a piece at the given location
      *
@@ -69,7 +82,11 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null) {
+            return null;
+        }
+        Collection<ChessMove> theoreticalMoves = getTheoreticalMoves(board, piece.getTeamColor());
     }
 
     /**
