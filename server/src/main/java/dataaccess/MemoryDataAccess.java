@@ -65,6 +65,19 @@ public class MemoryDataAccess implements DataAccess {
         return gameDataHashMap.values();
     }
 
+    public GameData getGame(String gameID) throws DataAccessException {
+        if (gameDataHashMap.containsKey(gameID)) {
+            return gameDataHashMap.get(gameID);
+        } else {
+            throw new DataAccessException("Error: bad request");
+        }
+    }
+
+    public void updateGame(String gameID, GameData updatedGame){
+        gameDataHashMap.remove(gameID);
+        gameDataHashMap.put(gameID, updatedGame);
+    }
+
     public void clearData() {
         userDataHashMap.clear();
         gameDataHashMap.clear();

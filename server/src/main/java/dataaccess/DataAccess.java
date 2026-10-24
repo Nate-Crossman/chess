@@ -22,5 +22,9 @@ public interface DataAccess {
 
     Collection<GameData> getListGames();
 
+    GameData getGame(String gameID) throws DataAccessException;
+
+    void updateGame(String gameID, GameData updatedGame) throws DataAccessException;
+
     void clearData();
 }
