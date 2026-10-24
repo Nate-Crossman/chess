@@ -37,4 +37,8 @@ public class Service {
             throw new DataAccessException("Error: unauthorized");
         }
     }
+
+    public void logout(String authToken) throws DataAccessException {
+        dataAccess.removeAuthData(authToken);
+    }
 }
