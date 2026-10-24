@@ -3,7 +3,10 @@ package service;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
+
+import java.util.Collection;
 
 public class Service {
 
@@ -50,5 +53,12 @@ public class Service {
             throw new DataAccessException("Error: bad request");
         }
         return dataAccess.createGame(gameName);
+    }
+
+    public Collection<GameData> getListGames(String authToken) throws DataAccessException {
+        if (!dataAccess.hasAuthToken(authToken)) {
+            throw new DataAccessException("Error: unauthorized");
+        }
+        return dataAccess.getListGames();
     }
 }
