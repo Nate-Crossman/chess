@@ -8,6 +8,9 @@ import io.javalin.http.Context;
 import model.*;
 import service.Service;
 
+import java.util.Collection;
+import java.util.Map;
+
 public class Server {
 
     private final Javalin javalin;
@@ -21,6 +24,7 @@ public class Server {
                 .post("/session", this::login)
                 .delete("/session", this::logout)
                 .post("/game", this::createGame)
+                .get("/game", this::listGames)
                 .exception(Exception.class, this::exceptionHandler);
 
 
@@ -60,6 +64,13 @@ public class Server {
         int id = service.createGame(authToken, request.gameName());
         ctx.status(200);
         ctx.result(String.format("{\"gameID\": \"%04d\" }", id));
+    }
+
+    public void listGames(Context ctx) throws DataAccessException {
+        String authToken = ctx.header("authorization");
+        Collection<GameData> games = service.getListGames(authToken);
+        ctx.status(200);
+        ctx.result(new Gson().toJson(Map.of("games", games)));
     }
 
     public int run(int desiredPort) {
