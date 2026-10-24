@@ -66,7 +66,7 @@ public class Server {
             case null, default -> status = 500;
         }
         ctx.status(status);
-        ctx.result(String.format("{\"message\":\"Error: %s\"}", errorMessage));
+        ctx.result(String.format("{\"message\":\"%s\"}", errorMessage));
     }
 }
 

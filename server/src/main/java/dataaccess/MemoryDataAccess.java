@@ -36,6 +36,17 @@ public class MemoryDataAccess implements DataAccess {
         return new AuthData(token, username);
     }
 
+    public void removeAuthData(String authToken) throws DataAccessException {
+        if (hasAuthToken(authToken)) {
+            authDataHashMap.remove(authToken);
+        }
+        throw new DataAccessException("Error: unauthorized");
+    }
+
+    public boolean hasAuthToken(String authToken) {
+        return authDataHashMap.containsKey(authToken);
+    }
+
     public void clearData() {
         userDataHashMap.clear();
         gameDataHashMap.clear();

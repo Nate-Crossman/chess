@@ -11,5 +11,9 @@ public interface DataAccess {
 
     UserData getUserData(String username) throws DataAccessException;
 
+    void removeAuthData(String authToken) throws DataAccessException;
+
+    boolean hasAuthToken(String authToken);
+
     void clearData();
 }
