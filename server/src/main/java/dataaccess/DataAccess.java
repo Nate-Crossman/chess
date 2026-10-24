@@ -9,5 +9,7 @@ public interface DataAccess {
 
     AuthData createAuthData(String username);
 
+    UserData getUserData(String username) throws DataAccessException;
+
     void clearData();
 }

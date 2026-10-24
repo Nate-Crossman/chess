@@ -13,6 +13,14 @@ public class MemoryDataAccess implements DataAccess {
 //    authToken --> userName
     HashMap<String, String> authDataHashMap = new HashMap<String, String>();
 
+
+    public UserData getUserData(String username) throws DataAccessException {
+        if (userDataHashMap.containsKey(username)) {
+            return userDataHashMap.get(username);
+        }
+        throw new DataAccessException("Error: bad request"); // may be need to be another error message
+    }
+
     public AuthData addUserData(UserData inputData) throws DataAccessException {
         String username = inputData.username();
         if (userDataHashMap.containsKey(username)) {
