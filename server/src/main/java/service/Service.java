@@ -41,4 +41,14 @@ public class Service {
     public void logout(String authToken) throws DataAccessException {
         dataAccess.removeAuthData(authToken);
     }
+
+    public int createGame(String authToken, String gameName) throws DataAccessException {
+        if (!dataAccess.hasAuthToken(authToken)) {
+            throw new DataAccessException("Error: unauthorized");
+        }
+        if (gameName == null) {
+            throw new DataAccessException("Error: bad request");
+        }
+        return dataAccess.createGame(gameName);
+    }
 }
