@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.*;
 
 import java.util.HashMap;
@@ -12,6 +13,8 @@ public class MemoryDataAccess implements DataAccess {
     HashMap<String, GameData> gameDataHashMap = new HashMap<String, GameData>();
 //    authToken --> userName
     HashMap<String, String> authDataHashMap = new HashMap<String, String>();
+
+    int idCounter = 1;
 
 
     public UserData getUserData(String username) throws DataAccessException {
@@ -42,11 +45,18 @@ public class MemoryDataAccess implements DataAccess {
         } else {
             throw new DataAccessException("Error: unauthorized");
         }
-
     }
 
     public boolean hasAuthToken(String authToken) {
         return authDataHashMap.containsKey(authToken);
+    }
+
+    public int createGame(String gameName) {
+        int id = idCounter;
+        idCounter++;
+        GameData data = new GameData(id, null, null, gameName, new ChessGame());
+        gameDataHashMap.put(String.format("%04d",id), data);
+        return id;
     }
 
     public void clearData() {

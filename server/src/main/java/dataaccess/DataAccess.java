@@ -15,5 +15,8 @@ public interface DataAccess {
 
     boolean hasAuthToken(String authToken);
 
+    int createGame(String gameName) throws DataAccessException;
+
+
     void clearData();
 }
