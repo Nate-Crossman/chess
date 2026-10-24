@@ -18,7 +18,8 @@ public class Server {
         this.service = new Service(new MemoryDataAccess());
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .post("/user", this::register)
-                .delete("/db", this::clear);
+                .delete("/db", this::clear)
+                .exception(Exception.class, this::exceptionHandler);
 
 
         // Register your endpoints and exception handlers here.
@@ -29,7 +30,6 @@ public class Server {
         AuthData authData = service.register(inputData);
         ctx.status(200);
         ctx.result(new Gson().toJson(authData));
-
     }
 
     public void clear(Context ctx) {
@@ -45,6 +45,18 @@ public class Server {
 
     public void stop() {
         javalin.stop();
+    }
+
+    private void exceptionHandler(Exception e, Context ctx) {
+        int status;
+        String errorMessage = e.getMessage();
+        switch (errorMessage) {
+            case "Error: bad request" -> status = 400;
+            case "Error: already taken" -> status = 403;
+            case null, default -> status = 500;
+        }
+        ctx.status(status);
+        ctx.result(String.format("{\"message\":\"Error: %s\"}", errorMessage));
     }
 }
 
