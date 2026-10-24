@@ -3,6 +3,7 @@ package dataaccess;
 import model.*;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class MemoryDataAccess implements DataAccess {
 //    Username --> UserData
@@ -11,6 +12,20 @@ public class MemoryDataAccess implements DataAccess {
     HashMap<String, GameData> gameDataHashMap = new HashMap<String, GameData>();
 //    authToken --> userName
     HashMap<String, String> authDataHashMap = new HashMap<String, String>();
+
+    public AuthData addUserData(UserData inputData) throws DataAccessException {
+        String username = inputData.username();
+        if (userDataHashMap.containsKey(username)) {
+            throw new DataAccessException("username already taken");
+        }
+        return createAuthData(username);
+    }
+
+    public AuthData createAuthData(String username) {
+        String token = UUID.randomUUID().toString();
+        authDataHashMap.put(token, username);
+        return new AuthData(token, username);
+    }
 
     public void clearData() {
         userDataHashMap.clear();
