@@ -1,4 +1,6 @@
 package dataaccess;
 
-public class DataAccess {
+public interface DataAccess {
+
+    void clearData();
 }
