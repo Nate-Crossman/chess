@@ -21,6 +21,7 @@ public class Server {
                 .post("/user", this::register)
                 .delete("/db", this::clear)
                 .post("/session", this::login)
+                .delete("/session", this::logout)
                 .exception(Exception.class, this::exceptionHandler);
 
 
@@ -45,6 +46,13 @@ public class Server {
         AuthData authData = service.login(request.username(), request.password());
         ctx.status(200);
         ctx.result(new Gson().toJson(authData));
+    }
+
+    public void logout(Context ctx) throws DataAccessException {
+        String authToken = ctx.header("authorization");
+        service.logout(authToken);
+        ctx.status(200);
+        ctx.result("{}");
     }
 
     public int run(int desiredPort) {

@@ -39,8 +39,10 @@ public class MemoryDataAccess implements DataAccess {
     public void removeAuthData(String authToken) throws DataAccessException {
         if (hasAuthToken(authToken)) {
             authDataHashMap.remove(authToken);
+        } else {
+            throw new DataAccessException("Error: unauthorized");
         }
-        throw new DataAccessException("Error: unauthorized");
+
     }
 
     public boolean hasAuthToken(String authToken) {
