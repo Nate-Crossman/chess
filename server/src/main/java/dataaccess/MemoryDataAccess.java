@@ -18,7 +18,7 @@ public class MemoryDataAccess implements DataAccess {
         if (userDataHashMap.containsKey(username)) {
             return userDataHashMap.get(username);
         }
-        throw new DataAccessException("Error: bad request"); // may be need to be another error message
+        throw new DataAccessException("Error: unauthorized");
     }
 
     public AuthData addUserData(UserData inputData) throws DataAccessException {

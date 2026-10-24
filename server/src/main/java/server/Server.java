@@ -6,6 +6,7 @@ import dataaccess.MemoryDataAccess;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.AuthData;
+import model.LoginRequest;
 import model.UserData;
 import service.Service;
 
@@ -19,6 +20,7 @@ public class Server {
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .post("/user", this::register)
                 .delete("/db", this::clear)
+                .post("/session", this::login)
                 .exception(Exception.class, this::exceptionHandler);
 
 
@@ -38,6 +40,13 @@ public class Server {
         ctx.result("{}");
     }
 
+    public void login(Context ctx) throws DataAccessException {
+        LoginRequest request = new Gson().fromJson(ctx.body(), LoginRequest.class);
+        AuthData authData = service.login(request.username(), request.password());
+        ctx.status(200);
+        ctx.result(new Gson().toJson(authData));
+    }
+
     public int run(int desiredPort) {
         javalin.start(desiredPort);
         return javalin.port();
@@ -52,6 +61,7 @@ public class Server {
         String errorMessage = e.getMessage();
         switch (errorMessage) {
             case "Error: bad request" -> status = 400;
+            case "Error: unauthorized" -> status = 401;
             case "Error: already taken" -> status = 403;
             case null, default -> status = 500;
         }
