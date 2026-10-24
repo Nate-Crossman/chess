@@ -1,5 +1,6 @@
 package service;
 
+import dataaccess.MemoryDataAccess;
 import org.junit.jupiter.api.*;
 
 public class ServiceUnitTests {
@@ -7,7 +8,7 @@ public class ServiceUnitTests {
 
     @BeforeAll
     public static void init(){
-        service = new Service();
+        service = new Service(new MemoryDataAccess());
     }
 
     @BeforeEach
