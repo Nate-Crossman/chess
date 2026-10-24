@@ -3,7 +3,9 @@ package dataaccess;
 import chess.ChessGame;
 import model.*;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class MemoryDataAccess implements DataAccess {
@@ -57,6 +59,10 @@ public class MemoryDataAccess implements DataAccess {
         GameData data = new GameData(id, null, null, gameName, new ChessGame());
         gameDataHashMap.put(String.format("%04d",id), data);
         return id;
+    }
+
+    public Collection<GameData> getListGames() {
+        return gameDataHashMap.values();
     }
 
     public void clearData() {

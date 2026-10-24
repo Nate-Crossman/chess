@@ -1,7 +1,10 @@
 package dataaccess;
 
 import model.AuthData;
+import model.GameData;
 import model.UserData;
+
+import java.util.Collection;
 
 public interface DataAccess {
 
@@ -17,6 +20,7 @@ public interface DataAccess {
 
     int createGame(String gameName) throws DataAccessException;
 
+    Collection<GameData> getListGames();
 
     void clearData();
 }
