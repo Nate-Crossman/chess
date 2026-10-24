@@ -24,6 +24,17 @@ public class Service {
             throw new DataAccessException("Error: bad request");
         }
         return dataAccess.addUserData(inputData);
+    }
 
+    public AuthData login(String username, String password) throws DataAccessException {
+        if (username == null || password == null) {
+            throw new DataAccessException("Error: bad request");
+        }
+        UserData userData = dataAccess.getUserData(username);
+        if (password.equals(userData.password())) {
+            return dataAccess.createAuthData(username);
+        } else {
+            throw new DataAccessException("Error: unauthorized");
+        }
     }
 }
