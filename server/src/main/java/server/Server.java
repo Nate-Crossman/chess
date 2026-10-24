@@ -63,7 +63,7 @@ public class Server {
         CreateGameRequest request = new Gson().fromJson(ctx.body(), CreateGameRequest.class);
         int id = service.createGame(authToken, request.gameName());
         ctx.status(200);
-        ctx.result(String.format("{\"gameID\": \"%04d\" }", id));
+        ctx.result(new Gson().toJson(Map.of("gameID", String.format("%04d",id))));
     }
 
     public void listGames(Context ctx) throws DataAccessException {
