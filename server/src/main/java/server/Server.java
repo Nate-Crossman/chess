@@ -5,9 +5,7 @@ import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import io.javalin.*;
 import io.javalin.http.Context;
-import model.AuthData;
-import model.LoginRequest;
-import model.UserData;
+import model.*;
 import service.Service;
 
 public class Server {
@@ -22,6 +20,7 @@ public class Server {
                 .delete("/db", this::clear)
                 .post("/session", this::login)
                 .delete("/session", this::logout)
+                .post("/game", this::createGame)
                 .exception(Exception.class, this::exceptionHandler);
 
 
@@ -53,6 +52,14 @@ public class Server {
         service.logout(authToken);
         ctx.status(200);
         ctx.result("{}");
+    }
+
+    public void createGame(Context ctx) throws DataAccessException {
+        String authToken = ctx.header("authorization");
+        CreateGameRequest request = new Gson().fromJson(ctx.body(), CreateGameRequest.class);
+        int id = service.createGame(authToken, request.gameName());
+        ctx.status(200);
+        ctx.result(String.format("{\"gameID\": \"%04d\" }", id));
     }
 
     public int run(int desiredPort) {
