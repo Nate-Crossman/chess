@@ -3,8 +3,11 @@ package service;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.*;
+
+import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -106,5 +109,29 @@ public class ServiceUnitTests {
             Assertions.fail();
         }
     }
+
+    @Test
+    public void testListGames() {
+        try {
+            AuthData authData = service.register(testUser);
+            int gameID1 = service.createGame(authData.authToken(), "testGame1");
+            Collection<GameData> collection1 = service.getListGames(authData.authToken());
+            Assertions.assertEquals(1, collection1.size());
+            int gameID2 = service.createGame(authData.authToken(), "testGame");
+            Collection<GameData> collection2 = service.getListGames(authData.authToken());
+            Assertions.assertEquals(2, collection2.size());
+            Assertions.assertNotEquals(gameID1, gameID2);
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    public void testListUnauthorized() {
+        assertThrows(DataAccessException.class, () -> service.createGame("wrong token", "gameName"));
+    }
+
+
+
 
 }
