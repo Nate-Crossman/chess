@@ -90,5 +90,6 @@ public class MemoryDataAccess implements DataAccess {
         userDataHashMap.clear();
         gameDataHashMap.clear();
         authDataHashMap.clear();
+        idCounter = 1;
     }
 }
