@@ -128,10 +128,25 @@ public class ServiceUnitTests {
 
     @Test
     public void testListUnauthorized() {
-        assertThrows(DataAccessException.class, () -> service.createGame("wrong token", "gameName"));
+        assertThrows(DataAccessException.class, () -> service.getListGames("wrong token"));
     }
 
+    @Test
+    public void testCreateGame() {
+        try {
+            AuthData authData = service.register(testUser);
+            int gameID1 = service.createGame(authData.authToken(), "game1");
+            int gameID2 = service.createGame(authData.authToken(), "game2");
+            Assertions.assertNotEquals(gameID1, gameID2);
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+    }
 
+    @Test
+    public void testCreateGameUnauthorized() {
+        assertThrows(DataAccessException.class, () -> service.createGame("wrong token", "gameName"));
+    }
 
 
 }
