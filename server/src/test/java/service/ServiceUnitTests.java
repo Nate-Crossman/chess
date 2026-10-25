@@ -59,6 +59,7 @@ public class ServiceUnitTests {
         try {
             AuthData data1 = service.register(testUser);
             AuthData data2 = service.login("John Doe", "password123");
+            Assertions.assertNotNull(data2);
             Assertions.assertNotEquals(data1, data2);
         } catch (DataAccessException e) {
             Assertions.fail();
@@ -84,4 +85,26 @@ public class ServiceUnitTests {
             Assertions.fail();
         }
     }
+
+    @Test
+    public void testLogout() {
+        try {
+            AuthData authData = service.register(testUser);
+            service.logout(authData.authToken());
+            assertThrows(DataAccessException.class, () -> service.createGame(authData.authToken(), "unauthorized game"));
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    public void testLogoutIncorrectToken() {
+        try {
+            service.register(testUser);
+            assertThrows(DataAccessException.class, () -> service.logout("wrong token"));
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+    }
+
 }
