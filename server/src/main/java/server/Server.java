@@ -25,6 +25,7 @@ public class Server {
                 .delete("/session", this::logout)
                 .post("/game", this::createGame)
                 .get("/game", this::listGames)
+                .put("/game", this::joinGame)
                 .exception(Exception.class, this::exceptionHandler);
 
 
@@ -71,6 +72,14 @@ public class Server {
         Collection<GameData> games = service.getListGames(authToken);
         ctx.status(200);
         ctx.result(new Gson().toJson(Map.of("games", games)));
+    }
+
+    public void joinGame(Context ctx) throws DataAccessException {
+        String authToken = ctx.header("authorization");
+        JoinGameRequest request = new Gson().fromJson(ctx.body(), JoinGameRequest.class);
+        service.joinGame(authToken, request.playerColor(), request.gameID());
+        ctx.status(200);
+        ctx.result("{}");
     }
 
     public int run(int desiredPort) {
