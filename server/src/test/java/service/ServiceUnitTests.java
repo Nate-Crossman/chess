@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import model.AuthData;
@@ -8,6 +9,7 @@ import model.UserData;
 import org.junit.jupiter.api.*;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -158,5 +160,52 @@ public class ServiceUnitTests {
         }
     }
 
+    @Test
+    public void testJoinGame() {
+        try {
+            AuthData data = service.register(testUser);
+            int gameID = service.createGame(data.authToken(), "game");
+            service.joinGame(data.authToken(), "WHITE",gameID);
+            Collection<GameData> expected = new HashSet<GameData>();
+            expected.add(new GameData(1,
+                    "John Doe",
+                    null,
+                    "game",
+                    new ChessGame()));
+            Collection<GameData> gameList = service.getListGames(data.authToken());
+            Assertions.assertEquals(expected.toString(), gameList.toString());
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+    }
 
+    @Test
+    public void testJoinGameAlreadyTaken() {
+        try{
+            AuthData data1 = service.register(testUser);
+            AuthData data2 = service.register(new UserData("Player2", "pass", "email"));
+            int gameID = service.createGame(data1.authToken(), "game");
+            service.joinGame(data1.authToken(), "WHITE", gameID);
+            assertThrows(DataAccessException.class, () -> service.joinGame(data2.authToken(), "WHITE", gameID));
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    public void testJoinGameUnauthorized() {
+        assertThrows(DataAccessException.class, () -> service.joinGame("noAuthToken", "WHITE", 1));
+    }
+
+    @Test
+    public void testJoinGameBadRequest() {
+        try{
+            AuthData data1 = service.register(testUser);
+            int gameID = service.createGame(data1.authToken(), "game");
+            service.joinGame(data1.authToken(), "WHITE", gameID);
+            assertThrows(DataAccessException.class, () -> service.joinGame(data1.authToken(), "fart", gameID));
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+    }
 }
