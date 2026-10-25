@@ -6,6 +6,8 @@ import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.*;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class ServiceUnitTests {
     private static Service service;
 
@@ -19,15 +21,38 @@ public class ServiceUnitTests {
         service.clear();
     }
 
+    private final UserData testUser = new UserData("John Doe", "password123", "email@test.com");
+
     @Test
     public void testCreateNewUser() {
         try {
-            UserData inputData = new UserData("John Doe", "password123", "email@test.com");
-            AuthData outputData = service.register(inputData);
+            AuthData outputData = service.register(testUser);
             Assertions.assertNotNull(outputData);
-            Assertions.assertEquals(inputData.username(), outputData.username());
+            Assertions.assertEquals(testUser.username(), outputData.username());
         } catch (DataAccessException e) {
             Assertions.fail();
         }
+    }
+
+    @Test
+    public void testBadRegisterRequests() {
+        UserData noUsername = new UserData(null, "password", "email@test.com");
+        UserData noPassword = new UserData("John Doe", null, "email@test.com");
+        UserData noEmail    = new UserData("John Doe", "password", null);
+        assertThrows(DataAccessException.class, () -> service.register(noUsername));
+        assertThrows(DataAccessException.class, () -> service.register(noPassword));
+        assertThrows(DataAccessException.class, () -> service.register(noEmail));
+    }
+
+    @Test
+    public void testAlreadyTakenRegister() {
+        try {
+            service.register(testUser);
+            assertThrows(DataAccessException.class, () -> service.register(testUser));
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+
+
     }
 }
