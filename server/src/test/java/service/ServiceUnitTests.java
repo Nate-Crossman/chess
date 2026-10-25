@@ -148,5 +148,15 @@ public class ServiceUnitTests {
         assertThrows(DataAccessException.class, () -> service.createGame("wrong token", "gameName"));
     }
 
+    @Test
+    public void testCreateGameBadRequest() {
+        try {
+            AuthData data = service.register(testUser);
+            assertThrows(DataAccessException.class, () -> service.createGame(data.authToken(), null));
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+    }
+
 
 }
