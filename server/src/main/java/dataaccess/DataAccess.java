@@ -27,4 +27,7 @@ public interface DataAccess {
     void updateGame(String gameID, GameData updatedGame) throws DataAccessException;
 
     void clearData();
+
+    String getUsername(String authToken) throws DataAccessException;
+
 }

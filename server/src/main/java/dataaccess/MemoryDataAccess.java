@@ -73,6 +73,14 @@ public class MemoryDataAccess implements DataAccess {
         }
     }
 
+    public String getUsername(String authToken) throws DataAccessException {
+        if (authDataHashMap.containsKey(authToken)) {
+            return authDataHashMap.get(authToken);
+        } else {
+            throw new DataAccessException("Error: unauthorized");
+        }
+    }
+
     public void updateGame(String gameID, GameData updatedGame){
         gameDataHashMap.remove(gameID);
         gameDataHashMap.put(gameID, updatedGame);
