@@ -52,7 +52,36 @@ public class ServiceUnitTests {
         } catch (DataAccessException e) {
             Assertions.fail();
         }
+    }
 
+    @Test
+    public void testLogin() {
+        try {
+            AuthData data1 = service.register(testUser);
+            AuthData data2 = service.login("John Doe", "password123");
+            Assertions.assertNotEquals(data1, data2);
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+    }
 
+    @Test
+    public void testLoginWrongPassword() {
+        try {
+            service.register(testUser);
+            assertThrows(DataAccessException.class, () -> service.login("John Doe", "wrong password"));
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    public void testLoginBadRequest() {
+        try {
+            service.register(testUser);
+            assertThrows(DataAccessException.class, () -> service.login("John Doe", null));
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
     }
 }
