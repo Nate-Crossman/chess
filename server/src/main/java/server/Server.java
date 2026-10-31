@@ -21,7 +21,8 @@ public class Server {
         try {
             this.service = new Service(new MySQLDataAccess());
         } catch (DataAccessException e) {
-            this.service = new Service(new MemoryDataAccess());
+            throw new RuntimeException(e);
+//            this.service = new Service(new MemoryDataAccess());
         }
 
         javalin = Javalin.create(config -> config.staticFiles.add("web"))

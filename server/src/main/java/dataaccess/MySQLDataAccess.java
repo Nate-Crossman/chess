@@ -5,9 +5,8 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 
-import java.sql.Connection;
-import java.sql.SQLDataException;
-import java.sql.SQLException;
+import java.sql.*;
+
 import java.util.Collection;
 import java.util.UUID;
 
@@ -25,15 +24,15 @@ CREATE TABLE IF NOT EXISTS userDataSet (
 `email` varchar(255) NOT NULL,
 PRIMARY KEY (`username`)
 )
-""\",
-            ""\"
+""",
+            """
 CREATE TABLE IF NOT EXISTS authDataSet (
 `authToken` varchar(255) NOT NULL,
 `username` varchar(255) NOT NULL,
 PRIMARY KEY (`authToken`)
 )
-""\",
-            ""\"
+""",
+            """
 CREATE TABLE IF NOT EXISTS gameDataSet (
 `id` int NOT NULL AUTO_INCREMENT,
 `whiteUsername` varchar(255),
@@ -58,8 +57,25 @@ PRIMARY KEY (`id`)
         }
     }
 
+    private static final String getUserDataStatement =
+            "SELECT password, email FROM userDataSet WHERE username = ?";
+
     public UserData getUserData(String username) throws DataAccessException {
-        return null;
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try(var preparedStatement = conn.prepareStatement(getUserDataStatement)) {
+                preparedStatement.setString(1, username);
+                try (ResultSet rs = preparedStatement.executeQuery()) {
+                    if (!rs.next()) {
+                        throw new DataAccessException("Error: bad request");
+                    }
+                    String password = rs.getString("password");
+                    String email = rs.getString("email");
+                    return new UserData(username, password, email);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     public AuthData addUserData(UserData inputData) throws DataAccessException {
