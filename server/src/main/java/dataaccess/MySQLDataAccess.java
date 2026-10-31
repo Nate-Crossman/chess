@@ -98,7 +98,21 @@ PRIMARY KEY (`id`)
 
     }
 
-    public void clearData() {
+    private final String[] clearStatements = {
+            " TRUNCATE TABLE IF EXISTS userDataSet",
+            " TRUNCATE TABLE IF EXISTS authDataSet",
+            " TRUNCATE TABLE IF EXISTS gameDataSet",
+    };
 
+    public void clearData() throws DataAccessException {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            for (String statement : clearStatements) {
+                try(var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 }

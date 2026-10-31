@@ -39,7 +39,7 @@ public class Server {
         ctx.result(new Gson().toJson(authData));
     }
 
-    public void clear(Context ctx) {
+    public void clear(Context ctx) throws DataAccessException {
         service.clear();
         ctx.status(200);
         ctx.result("{}");
