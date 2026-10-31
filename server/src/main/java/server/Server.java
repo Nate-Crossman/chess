@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
+import dataaccess.MySQLDataAccess;
 import io.javalin.*;
 import io.javalin.http.Context;
 import model.*;
@@ -14,10 +15,15 @@ import java.util.Map;
 public class Server {
 
     private final Javalin javalin;
-    private final Service service;
+    private Service service;
 
     public Server() {
-        this.service = new Service(new MemoryDataAccess());
+        try {
+            this.service = new Service(new MySQLDataAccess());
+        } catch (DataAccessException e) {
+            this.service = new Service(new MemoryDataAccess());
+        }
+
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .post("/user", this::register)
                 .delete("/db", this::clear)

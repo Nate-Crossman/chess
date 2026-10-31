@@ -23,7 +23,12 @@ public class ServiceUnitTests {
 
     @BeforeEach
     public void clearService() {
-        service.clear();
+        try {
+            service.clear();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private final UserData testUser = new UserData("John Doe", "password123", "email@test.com");
