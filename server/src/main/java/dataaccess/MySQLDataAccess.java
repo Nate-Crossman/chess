@@ -78,12 +78,42 @@ PRIMARY KEY (`id`)
         }
     }
 
+    private static final String addUserDataStatement =
+            "INSERT INTO userDataSet (username, password, email) VALUES (?, ?, ?)";
+
     public AuthData addUserData(UserData inputData) throws DataAccessException {
-        return null;
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try(var preparedStatement = conn.prepareStatement(addUserDataStatement)) {
+                preparedStatement.setString(1, inputData.username());
+                preparedStatement.setString(2, inputData.password());
+                preparedStatement.setString(3, inputData.email());
+                try (ResultSet rs = preparedStatement.executeUpdate()) {
+                    if (rs.next()) {
+                        throw new DataAccessException("Error: already taken");
+                    }
+                    return createAuthData(inputData.username());
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
-    public AuthData createAuthData(String username) {
-        return null;
+    private static final String createAuthDataStatement =
+            "INSERT INTO authDataSet (token, username) VALUES (?, ?)";
+
+    public AuthData createAuthData(String username) throws DataAccessException {
+        String token = UUID.randomUUID().toString();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try(var preparedStatement = conn.prepareStatement(createAuthDataStatement)) {
+                preparedStatement.setString(1, token);
+                preparedStatement.setString(2, username);
+                preparedStatement.executeUpdate();
+            }
+            return new AuthData(token, username);
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     public void removeAuthData(String authToken) throws DataAccessException {
