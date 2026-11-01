@@ -1,6 +1,8 @@
 package dataaccess;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
+import kotlin.TuplesKt;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -157,8 +159,29 @@ PRIMARY KEY (`id`)
         }
     }
 
-    public int createGame(String gameName) {
-        return 0;
+    private static final String createGameStatement =
+            "INSERT INTO gameDataSet (gameName, gameJSON) VALUES (?, ?)";
+
+    public int createGame(String gameName) throws DataAccessException {
+        ChessGame game = new ChessGame();
+        Gson gson = new Gson();
+        String gameJSON = gson.toJson(game);
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(createGameStatement, Statement.RETURN_GENERATED_KEYS)) {
+                preparedStatement.setString(1, gameName);
+                preparedStatement.setString(2, gameJSON);
+                preparedStatement.executeUpdate();
+
+                try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
+                    throw new DataAccessException("Error: Unable to retrieve created game index");
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     public Collection<GameData> getListGames() {
