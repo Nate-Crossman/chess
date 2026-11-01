@@ -66,7 +66,7 @@ PRIMARY KEY (`id`)
                 preparedStatement.setString(1, username);
                 try (ResultSet rs = preparedStatement.executeQuery()) {
                     if (!rs.next()) {
-                        throw new DataAccessException("Error: bad request");
+                        throw new DataAccessException("Error: unauthorized");
                     }
                     String password = rs.getString("password");
                     String email = rs.getString("email");
