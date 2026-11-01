@@ -141,8 +141,20 @@ PRIMARY KEY (`id`)
         }
     }
 
-    public boolean hasAuthToken(String authToken) {
-        return false;
+    private static final String getAuthDataStatement =
+            "SELECT * FROM authDataSet WHERE authToken = ?";
+
+    public boolean hasAuthToken(String authToken) throws DataAccessException {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try(var preparedStatement = conn.prepareStatement(getAuthDataStatement)) {
+                preparedStatement.setString(1, authToken);
+                try (ResultSet rs = preparedStatement.executeQuery()) {
+                    return rs.next();
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     public int createGame(String gameName) {
@@ -166,9 +178,9 @@ PRIMARY KEY (`id`)
     }
 
     private final String[] clearStatements = {
-            " TRUNCATE TABLE IF EXISTS userDataSet",
-            " TRUNCATE TABLE IF EXISTS authDataSet",
-            " TRUNCATE TABLE IF EXISTS gameDataSet",
+            " TRUNCATE TABLE userDataSet",
+            " TRUNCATE TABLE authDataSet",
+            " TRUNCATE TABLE gameDataSet",
     };
 
     public void clearData() throws DataAccessException {
