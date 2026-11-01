@@ -124,8 +124,21 @@ PRIMARY KEY (`id`)
         }
     }
 
-    public void removeAuthData(String authToken) throws DataAccessException {
+    private static final String removeAuthDataStatement =
+            "DELETE FROM authDataSet WHERE authToken = ?";
 
+    public void removeAuthData(String authToken) throws DataAccessException {
+        if (!hasAuthToken(authToken)) {
+            throw new DataAccessException("Error: unauthorized");
+        }
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try(var preparedStatement = conn.prepareStatement(removeAuthDataStatement)) {
+                preparedStatement.setString(1, authToken);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     public boolean hasAuthToken(String authToken) {
