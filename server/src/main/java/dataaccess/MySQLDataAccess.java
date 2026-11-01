@@ -83,16 +83,24 @@ PRIMARY KEY (`id`)
 
     public AuthData addUserData(UserData inputData) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
+            try(var preparedStatement = conn.prepareStatement(getUserDataStatement)) {
+                preparedStatement.setString(1, inputData.username());
+                try (ResultSet rs = preparedStatement.executeQuery()) {
+                    if (rs.next()) {
+                        throw new DataAccessException("Error: already taken");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        try (Connection conn = DatabaseManager.getConnection()) {
             try(var preparedStatement = conn.prepareStatement(addUserDataStatement)) {
                 preparedStatement.setString(1, inputData.username());
                 preparedStatement.setString(2, inputData.password());
                 preparedStatement.setString(3, inputData.email());
-                try (ResultSet rs = preparedStatement.executeUpdate()) {
-                    if (rs.next()) {
-                        throw new DataAccessException("Error: already taken");
-                    }
-                    return createAuthData(inputData.username());
-                }
+                preparedStatement.execute();
+                return createAuthData(inputData.username());
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
@@ -100,7 +108,7 @@ PRIMARY KEY (`id`)
     }
 
     private static final String createAuthDataStatement =
-            "INSERT INTO authDataSet (token, username) VALUES (?, ?)";
+            "INSERT INTO authDataSet (authToken, username) VALUES (?, ?)";
 
     public AuthData createAuthData(String username) throws DataAccessException {
         String token = UUID.randomUUID().toString();
