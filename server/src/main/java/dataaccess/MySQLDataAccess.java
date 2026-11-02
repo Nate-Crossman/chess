@@ -255,7 +255,24 @@ PRIMARY KEY (`id`)
         }
     }
 
-    public void updateGame(String gameID, GameData updatedGame){
+    private final static String updateGameStatement =
+            "UPDATE gameDataSet SET whiteUsername = ?, blackUsername = ?, gameName = ?, gameJSON = ? WHERE id = ?";
+
+    public void updateGame(String gameID, GameData updatedGame) throws DataAccessException {
+        int intGameID = Integer.parseInt(gameID); //what moron turned this into a string?
+        String updatedJSON = new Gson().toJson(updatedGame.game());
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(updateGameStatement)) {
+                preparedStatement.setString(1,updatedGame.whiteUsername());
+                preparedStatement.setString(2,updatedGame.blackUsername());
+                preparedStatement.setString(3,updatedGame.gameName());
+                preparedStatement.setString(4,updatedJSON);
+                preparedStatement.setInt(5, intGameID);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
 
     }
 
