@@ -5,6 +5,7 @@ import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Collection;
 
@@ -26,7 +27,9 @@ public class Service {
                 inputData.email() == null) {
             throw new DataAccessException("Error: bad request");
         }
-        return dataAccess.addUserData(inputData);
+        String hashedPassword = BCrypt.hashpw(inputData.password(), BCrypt.gensalt());
+        UserData hashedData = new UserData(inputData.username(), hashedPassword, inputData.email());
+        return dataAccess.addUserData(hashedData);
     }
 
     public AuthData login(String username, String password) throws DataAccessException {
@@ -34,7 +37,7 @@ public class Service {
             throw new DataAccessException("Error: bad request");
         }
         UserData userData = dataAccess.getUserData(username);
-        if (password.equals(userData.password())) {
+        if (BCrypt.checkpw(password, userData.password())) {
             return dataAccess.createAuthData(username);
         } else {
             throw new DataAccessException("Error: unauthorized");
