@@ -10,6 +10,7 @@ import model.UserData;
 import java.sql.*;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.UUID;
 
 public class MySQLDataAccess implements DataAccess {
@@ -184,8 +185,30 @@ PRIMARY KEY (`id`)
         }
     }
 
-    public Collection<GameData> getListGames() {
-        return null;
+    private final static String getListGamesStatement =
+            "SELECT * FROM gameDataSet";
+
+    public Collection<GameData> getListGames() throws DataAccessException {
+        Collection<GameData> output = new HashSet<GameData>();
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(getListGamesStatement)) {
+                try (ResultSet rs = preparedStatement.executeQuery()) {
+                    while (rs.next()) {
+                        int id = rs.getInt("id");
+                        String whiteUsername = rs.getString("whiteUsername");
+                        String blackUsername = rs.getString("blackUsername");
+                        String gameName = rs.getString("gameName");
+                        String gameJSON = rs.getString("gameJSON");
+                        ChessGame game = new Gson().fromJson(gameJSON, ChessGame.class);
+                        GameData data = new GameData(id, whiteUsername, blackUsername, gameName, game);
+                        output.add(data);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        return output;
     }
 
     public GameData getGame(String gameID) throws DataAccessException {

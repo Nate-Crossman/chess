@@ -20,7 +20,7 @@ public interface DataAccess {
 
     int createGame(String gameName) throws DataAccessException;
 
-    Collection<GameData> getListGames();
+    Collection<GameData> getListGames() throws DataAccessException;
 
     GameData getGame(String gameID) throws DataAccessException;
 
