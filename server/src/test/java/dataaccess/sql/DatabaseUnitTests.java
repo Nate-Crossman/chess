@@ -3,9 +3,11 @@ package dataaccess.sql;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import dataaccess.MySQLDataAccess;
+import model.AuthData;
 import model.UserData;
 import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DatabaseUnitTests {
     private static DataAccess dataAccess;
@@ -43,6 +45,25 @@ public class DatabaseUnitTests {
             assertThrows(DataAccessException.class, () -> dataAccess.addUserData(testUser));
             //test nonexistant user
             assertThrows(DataAccessException.class, () -> dataAccess.getUserData("Nobody"));
+        } catch (DataAccessException e) {
+            Assertions.fail();
+        }
+    }
+
+    @Test
+    public void testAuthData() {
+        try {
+            AuthData authData = dataAccess.createAuthData("Test User");
+            assertTrue(dataAccess.hasAuthToken(authData.authToken()));
+            String username = dataAccess.getUsername(authData.authToken());
+            assertEquals("Test User", username);
+
+            assertThrows(DataAccessException.class, () -> dataAccess.removeAuthData("fake token"));
+            assertThrows(DataAccessException.class, () -> dataAccess.getUsername("fake token"));
+
+            dataAccess.removeAuthData(authData.authToken());
+            assertFalse(dataAccess.hasAuthToken(authData.authToken()));
+
         } catch (DataAccessException e) {
             Assertions.fail();
         }
