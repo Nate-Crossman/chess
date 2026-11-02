@@ -211,8 +211,29 @@ PRIMARY KEY (`id`)
         return output;
     }
 
+    private final static String getGameStatement =
+            "SELECT * FROM gameDataSet WHERE id = ?";
+
     public GameData getGame(String gameID) throws DataAccessException {
-        return null;
+        int intGameID = Integer.parseInt(gameID);
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(getGameStatement)) {
+                preparedStatement.setInt(1, intGameID);
+                try (ResultSet rs = preparedStatement.executeQuery()) {
+                    if (!rs.next()) {
+                        throw new DataAccessException("Error: bad request");
+                    }
+                    int id = rs.getInt("id");
+                    String whiteUsername = rs.getString("whiteUsername");
+                    String blackUsername = rs.getString("blackUsername");
+                    String gameName = rs.getString("gameName");
+                    ChessGame game = new Gson().fromJson(rs.getString("gameJSON"), ChessGame.class);
+                    return new GameData(id, whiteUsername, blackUsername, gameName, game);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     public String getUsername(String authToken) throws DataAccessException {
