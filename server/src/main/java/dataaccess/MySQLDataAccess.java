@@ -236,8 +236,23 @@ PRIMARY KEY (`id`)
         }
     }
 
+    private final static String getUsernameStatment =
+            "SELECT username FROM authDataSet WHERE authtoken = ?";
+
     public String getUsername(String authToken) throws DataAccessException {
-        return null;
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(getUsernameStatment)) {
+                preparedStatement.setString(1, authToken);
+                try (ResultSet rs = preparedStatement.executeQuery()) {
+                    if (!rs.next()) {
+                        throw new DataAccessException("Error: unauthorized");
+                    }
+                    return rs.getString("username");
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     public void updateGame(String gameID, GameData updatedGame){
