@@ -101,6 +101,9 @@ public class Server {
     private void exceptionHandler(Exception e, Context ctx) {
         int status;
         String errorMessage = e.getMessage();
+        if (!errorMessage.startsWith("Error: ")) {
+            errorMessage = "Error: " + errorMessage;
+        }
         switch (errorMessage) {
             case "Error: bad request" -> status = 400;
             case "Error: unauthorized" -> status = 401;
