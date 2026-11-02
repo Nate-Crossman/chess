@@ -2,7 +2,6 @@ package dataaccess.sql;
 
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import dataaccess.MySQLDataAccess;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
