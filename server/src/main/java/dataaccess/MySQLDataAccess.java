@@ -60,12 +60,12 @@ PRIMARY KEY (`id`)
         }
     }
 
-    private static final String getUserDataStatement =
+    private static final String GET_USER_DATA_STATEMENT =
             "SELECT password, email FROM userDataSet WHERE username = ?";
 
     public UserData getUserData(String username) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
-            try(var preparedStatement = conn.prepareStatement(getUserDataStatement)) {
+            try(var preparedStatement = conn.prepareStatement(GET_USER_DATA_STATEMENT)) {
                 preparedStatement.setString(1, username);
                 try (ResultSet rs = preparedStatement.executeQuery()) {
                     if (!rs.next()) {
@@ -81,12 +81,12 @@ PRIMARY KEY (`id`)
         }
     }
 
-    private static final String addUserDataStatement =
+    private static final String ADD_USER_DATA_STATEMENT =
             "INSERT INTO userDataSet (username, password, email) VALUES (?, ?, ?)";
 
     public AuthData addUserData(UserData inputData) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
-            try(var preparedStatement = conn.prepareStatement(getUserDataStatement)) {
+            try(var preparedStatement = conn.prepareStatement(GET_USER_DATA_STATEMENT)) {
                 preparedStatement.setString(1, inputData.username());
                 try (ResultSet rs = preparedStatement.executeQuery()) {
                     if (rs.next()) {
@@ -98,7 +98,7 @@ PRIMARY KEY (`id`)
             throw new DataAccessException(e.getMessage());
         }
         try (Connection conn = DatabaseManager.getConnection()) {
-            try(var preparedStatement = conn.prepareStatement(addUserDataStatement)) {
+            try(var preparedStatement = conn.prepareStatement(ADD_USER_DATA_STATEMENT)) {
                 preparedStatement.setString(1, inputData.username());
                 preparedStatement.setString(2, inputData.password());
                 preparedStatement.setString(3, inputData.email());
@@ -110,13 +110,13 @@ PRIMARY KEY (`id`)
         }
     }
 
-    private static final String createAuthDataStatement =
+    private static final String CREATE_AUTH_DATA_STATEMENT =
             "INSERT INTO authDataSet (authToken, username) VALUES (?, ?)";
 
     public AuthData createAuthData(String username) throws DataAccessException {
         String token = UUID.randomUUID().toString();
         try (Connection conn = DatabaseManager.getConnection()) {
-            try(var preparedStatement = conn.prepareStatement(createAuthDataStatement)) {
+            try(var preparedStatement = conn.prepareStatement(CREATE_AUTH_DATA_STATEMENT)) {
                 preparedStatement.setString(1, token);
                 preparedStatement.setString(2, username);
                 preparedStatement.executeUpdate();
@@ -127,7 +127,7 @@ PRIMARY KEY (`id`)
         }
     }
 
-    private static final String removeAuthDataStatement =
+    private static final String REMOVE_AUTH_DATA_STATEMENT =
             "DELETE FROM authDataSet WHERE authToken = ?";
 
     public void removeAuthData(String authToken) throws DataAccessException {
@@ -135,7 +135,7 @@ PRIMARY KEY (`id`)
             throw new DataAccessException("Error: unauthorized");
         }
         try (Connection conn = DatabaseManager.getConnection()) {
-            try(var preparedStatement = conn.prepareStatement(removeAuthDataStatement)) {
+            try(var preparedStatement = conn.prepareStatement(REMOVE_AUTH_DATA_STATEMENT)) {
                 preparedStatement.setString(1, authToken);
                 preparedStatement.executeUpdate();
             }
@@ -144,12 +144,12 @@ PRIMARY KEY (`id`)
         }
     }
 
-    private static final String getAuthDataStatement =
+    private static final String GET_AUTH_DATA_STATEMENT =
             "SELECT * FROM authDataSet WHERE authToken = ?";
 
     public boolean hasAuthToken(String authToken) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
-            try(var preparedStatement = conn.prepareStatement(getAuthDataStatement)) {
+            try(var preparedStatement = conn.prepareStatement(GET_AUTH_DATA_STATEMENT)) {
                 preparedStatement.setString(1, authToken);
                 try (ResultSet rs = preparedStatement.executeQuery()) {
                     return rs.next();
@@ -160,7 +160,7 @@ PRIMARY KEY (`id`)
         }
     }
 
-    private static final String createGameStatement =
+    private static final String CREATE_GAME_STATEMENT =
             "INSERT INTO gameDataSet (gameName, gameJSON) VALUES (?, ?)";
 
     public int createGame(String gameName) throws DataAccessException {
@@ -168,7 +168,7 @@ PRIMARY KEY (`id`)
         Gson gson = new Gson();
         String gameJSON = gson.toJson(game);
         try (Connection conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement(createGameStatement, Statement.RETURN_GENERATED_KEYS)) {
+            try (var preparedStatement = conn.prepareStatement(CREATE_GAME_STATEMENT, Statement.RETURN_GENERATED_KEYS)) {
                 preparedStatement.setString(1, gameName);
                 preparedStatement.setString(2, gameJSON);
                 preparedStatement.executeUpdate();
@@ -185,13 +185,13 @@ PRIMARY KEY (`id`)
         }
     }
 
-    private final static String getListGamesStatement =
+    private final static String GET_LIST_GAMES_STATEMENT =
             "SELECT * FROM gameDataSet";
 
     public Collection<GameData> getListGames() throws DataAccessException {
         Collection<GameData> output = new HashSet<GameData>();
         try (Connection conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement(getListGamesStatement)) {
+            try (var preparedStatement = conn.prepareStatement(GET_LIST_GAMES_STATEMENT)) {
                 try (ResultSet rs = preparedStatement.executeQuery()) {
                     while (rs.next()) {
                         int id = rs.getInt("id");
@@ -211,13 +211,13 @@ PRIMARY KEY (`id`)
         return output;
     }
 
-    private final static String getGameStatement =
+    private final static String GET_GAME_STATEMENT =
             "SELECT * FROM gameDataSet WHERE id = ?";
 
     public GameData getGame(String gameID) throws DataAccessException {
         int intGameID = Integer.parseInt(gameID);
         try (Connection conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement(getGameStatement)) {
+            try (var preparedStatement = conn.prepareStatement(GET_GAME_STATEMENT)) {
                 preparedStatement.setInt(1, intGameID);
                 try (ResultSet rs = preparedStatement.executeQuery()) {
                     if (!rs.next()) {
@@ -236,12 +236,12 @@ PRIMARY KEY (`id`)
         }
     }
 
-    private final static String getUsernameStatment =
+    private final static String GET_USERNAME_STATEMENT =
             "SELECT username FROM authDataSet WHERE authtoken = ?";
 
     public String getUsername(String authToken) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement(getUsernameStatment)) {
+            try (var preparedStatement = conn.prepareStatement(GET_USERNAME_STATEMENT)) {
                 preparedStatement.setString(1, authToken);
                 try (ResultSet rs = preparedStatement.executeQuery()) {
                     if (!rs.next()) {
@@ -255,14 +255,14 @@ PRIMARY KEY (`id`)
         }
     }
 
-    private final static String updateGameStatement =
+    private final static String UPDATE_GAME_STATEMENT =
             "UPDATE gameDataSet SET whiteUsername = ?, blackUsername = ?, gameName = ?, gameJSON = ? WHERE id = ?";
 
     public void updateGame(String gameID, GameData updatedGame) throws DataAccessException {
         int intGameID = Integer.parseInt(gameID); //what moron turned this into a string?
         String updatedJSON = new Gson().toJson(updatedGame.game());
         try (Connection conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement(updateGameStatement)) {
+            try (var preparedStatement = conn.prepareStatement(UPDATE_GAME_STATEMENT)) {
                 preparedStatement.setString(1,updatedGame.whiteUsername());
                 preparedStatement.setString(2,updatedGame.blackUsername());
                 preparedStatement.setString(3,updatedGame.gameName());
