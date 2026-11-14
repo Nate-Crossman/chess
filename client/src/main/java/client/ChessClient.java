@@ -5,13 +5,25 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Locale;
+import java.util.Scanner;
 
 public class ChessClient {
 
     private static final HttpClient httpClient = HttpClient.newHttpClient();
 
-    public static void main(String[] args) throws Exception {
-        new ChessClient().get("localhost", 8080, "/name");
+    public void run() {
+        Scanner input = new Scanner(System.in);
+        boolean running = true;
+        boolean logged_in = false;
+        while (running) {
+            System.out.print("I AM RUNNING YIPPEE >");
+            String response = input.nextLine();
+            if (response.equals("quit") || response.equals("q")) {
+                running = false;
+            }
+            System.out.print(String.format("You just said: %s", response));
+        }
+        System.out.print("You quit the program. Yippee!");
     }
 
     private void get(String host, int port, String path) throws Exception {
