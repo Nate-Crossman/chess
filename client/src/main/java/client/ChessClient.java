@@ -31,4 +31,7 @@ public class ChessClient {
             System.out.println("Error: received status code " + httpResponse.statusCode());
         }
     }
+
+//    THIS CLASS DEALS WITH UI AND THE USER INPUT, GIVES IT TO SERVERFACADE TO ACTUALLY INTERACT W/ THE SERVER
+//    HANDLES ERRORS HERE IN A PRETTY WAY
 }
