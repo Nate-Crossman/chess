@@ -58,7 +58,7 @@ public class ChessClient {
             switch (responseParts[0]) {
                 case "help", "h" -> {}
                 case "register", "r" -> register(responseParts, state);
-                case "login", "l" -> {state.logged_in = true;} //code for testing will change (:
+                case "login", "l" -> login(responseParts, state); //code for testing will change (:
                 case "quit", "q" -> {state.running = false;}
                 default -> System.out.print("Command not recognized. Type \"help\" for list of commands.");
             }
@@ -80,6 +80,27 @@ public class ChessClient {
             switch (e.statusCode) {
                 case 400 -> errorMessage = errorMessage + ": Bad Request";
                 case 403 -> errorMessage = errorMessage + ": Username already taken";
+                default -> {}
+            }
+            System.out.print(errorMessage);
+        }
+    }
+
+    private void login(String[] responseParts, ClientState state) {
+        if (responseParts.length != 3) {
+            System.out.print("Login requires 2 arguments: <username>, <password>");
+            return;
+        }
+        try {
+            AuthData data = serverFacade.login(responseParts[1], responseParts[2]);
+            state.authToken = data.authToken();
+            state.logged_in = true;
+            System.out.print(String.format("Login SUCCESS: Signed in as %s", data.username()));
+        } catch (ServerException e) {
+            String errorMessage = "Login FAILED";
+            switch (e.statusCode) {
+                case 400 -> errorMessage = errorMessage + ": Bad Request";
+                case 401 -> errorMessage = errorMessage + ": Wrong password!";
                 default -> {}
             }
             System.out.print(errorMessage);
