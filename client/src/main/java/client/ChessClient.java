@@ -65,7 +65,7 @@ public class ChessClient {
         if (state.logged_in) {
             switch (responseParts[0]) {
                 case "help", "h" -> System.out.print(HELP_LOGGED_IN_MESSAGE);
-                case "logout", "l" -> {state.logged_in = false;}
+                case "logout", "l" -> logout(state);
                 case "create", "c" -> {}
                 case "list", "ls" -> {}
                 case "play", "p" -> {}
@@ -119,6 +119,22 @@ public class ChessClient {
             switch (e.statusCode) {
                 case 400 -> errorMessage = errorMessage + ": Bad Request";
                 case 401 -> errorMessage = errorMessage + ": Wrong password!";
+                default -> {}
+            }
+            System.out.println(errorMessage);
+        }
+    }
+
+    private void logout(ClientState state) {
+        try {
+            serverFacade.logout(state.authToken);
+            state.authToken = null;
+            state.logged_in = false;
+            System.out.println("Logout SUCCESS: Bye bye!");
+        } catch (ServerException e) {
+            String errorMessage = "Logout FAILED";
+            switch (e.statusCode) {
+                case 401 -> errorMessage = errorMessage + ": Authentication not recognized. Try restarting the application";
                 default -> {}
             }
             System.out.println(errorMessage);
