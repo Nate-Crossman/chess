@@ -26,7 +26,7 @@ public class ServerFacade {
     public AuthData register(String username, String password, String email) throws ServerException {
         String path = "/user";
         String method = "POST";
-        return makeRequest(method, path, new registerRequest(username, password, email), AuthData.class);
+        return makeRequest(method, path, new registerRequest(username, password, email), AuthData.class, null);
     }
 
     private record loginRequest(String username, String password) {}
@@ -34,21 +34,36 @@ public class ServerFacade {
     public AuthData login(String username, String password) throws ServerException {
         String path = "/session";
         String method = "POST";
-        return makeRequest(method, path, new loginRequest(username, password), AuthData.class);
+        return makeRequest(method, path, new loginRequest(username, password), AuthData.class, null);
+    }
+
+    public void logout(String authToken) throws ServerException {
+        String path = "/session";
+        String method = "DELETE";
+        makeRequest(method, path, null, null, authToken);
     }
 
     //universal helper function that builds and sents a request to the server
     private <T> T makeRequest(String method,
                               String path,
                               Object body,
-                              Class<T> responseClass) throws ServerException {
+                              Class<T> responseClass,
+                              String authToken) throws ServerException {
         try {
             HttpRequest.Builder builder = HttpRequest.newBuilder()
                     .uri(URI.create(url + path))
                     .timeout(java.time.Duration.ofMillis(5000));
-            builder.header("Content-Type", "application/json")
-                    //set method (/post, /get, etc) AND give it a body in the request
-                    .method(method, HttpRequest.BodyPublishers.ofString(gson.toJson(body)));
+            if (body != null) {
+                builder.header("Content-Type", "application/json");
+                //set method (/post, /get, etc) AND give it a body in the request
+                builder.method(method, HttpRequest.BodyPublishers.ofString(gson.toJson(body)));
+            } else {
+                // tell the builder when we wont need a body for things like logout or list games
+                builder.method(method, HttpRequest.BodyPublishers.noBody());
+            }
+            if (authToken != null) {
+                builder.header("authorization", authToken);
+            }
             HttpRequest request = builder.build();
             //send request and convert it into a response string
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
