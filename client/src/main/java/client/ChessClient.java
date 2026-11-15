@@ -18,6 +18,24 @@ class ClientState {
 
 public class ChessClient {
 
+    private static final String HELP_LOGGED_OUT_MESSAGE = """
+            Available commands:
+            register <Username> <Password> <Email> -- creates a new account
+            login <Username> <Password> -- login to an existing account
+            quit -- exit the application
+            help -- display available commands
+            """;
+
+    private static final String HELP_LOGGED_IN_MESSAGE = """
+            Available commands:
+            create <game name> -- create a new chess game
+            list -- list all available games
+            join <ID> [WHITE|BLACK] -- join the game as the provided color
+            observe <ID> -- spectate a game
+            logout -- sign out of current user
+            quit -- signs out and exits the application
+            """;
+
     private static final HttpClient httpClient = HttpClient.newHttpClient();
     private final String url;
     private final ServerFacade serverFacade;
@@ -46,7 +64,7 @@ public class ChessClient {
         String[] responseParts = response.trim().split("\\s+");
         if (state.logged_in) {
             switch (responseParts[0]) {
-                case "help", "h" -> {}
+                case "help", "h" -> System.out.print(HELP_LOGGED_IN_MESSAGE);
                 case "logout", "l" -> {state.logged_in = false;}
                 case "create", "c" -> {}
                 case "list", "ls" -> {}
@@ -56,7 +74,7 @@ public class ChessClient {
             }
         } else {
             switch (responseParts[0]) {
-                case "help", "h" -> {}
+                case "help", "h" -> System.out.print(HELP_LOGGED_OUT_MESSAGE);
                 case "register", "r" -> register(responseParts, state);
                 case "login", "l" -> login(responseParts, state); //code for testing will change (:
                 case "quit", "q" -> {state.running = false;}
@@ -74,7 +92,7 @@ public class ChessClient {
             AuthData data = serverFacade.register(responseParts[1], responseParts[2], responseParts[3]);
             state.authToken = data.authToken();
             state.logged_in = true;
-            System.out.print(String.format("Register SUCCESS: Signed in as %s", data.username()));
+            System.out.println(String.format("Register SUCCESS: Signed in as %s", data.username()));
         } catch (ServerException e) {
             String errorMessage = "Register FAILED";
             switch (e.statusCode) {
@@ -82,20 +100,20 @@ public class ChessClient {
                 case 403 -> errorMessage = errorMessage + ": Username already taken";
                 default -> {}
             }
-            System.out.print(errorMessage);
+            System.out.println(errorMessage);
         }
     }
 
     private void login(String[] responseParts, ClientState state) {
         if (responseParts.length != 3) {
-            System.out.print("Login requires 2 arguments: <username>, <password>");
+            System.out.println("Login requires 2 arguments: <username>, <password>");
             return;
         }
         try {
             AuthData data = serverFacade.login(responseParts[1], responseParts[2]);
             state.authToken = data.authToken();
             state.logged_in = true;
-            System.out.print(String.format("Login SUCCESS: Signed in as %s", data.username()));
+            System.out.println(String.format("Login SUCCESS: Signed in as %s", data.username()));
         } catch (ServerException e) {
             String errorMessage = "Login FAILED";
             switch (e.statusCode) {
@@ -103,7 +121,7 @@ public class ChessClient {
                 case 401 -> errorMessage = errorMessage + ": Wrong password!";
                 default -> {}
             }
-            System.out.print(errorMessage);
+            System.out.println(errorMessage);
         }
     }
 
