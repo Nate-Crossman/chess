@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 class ClientState {
+//    Default states on bootup
     boolean running = true;
     boolean logged_in = false;
 }
@@ -33,10 +34,11 @@ public class ChessClient {
     }
 
     private void handle(String response, ClientState state) {
+        String[] responseParts = response.split("\\s+", 3);
         if (state.logged_in) {
             switch (response) {
                 case "help", "h" -> {}
-                case "logout", "l" -> {}
+                case "logout", "l" -> {state.logged_in = false;}
                 case "create", "c" -> {}
                 case "list", "ls" -> {}
                 case "play", "p" -> {}
@@ -46,12 +48,19 @@ public class ChessClient {
         } else {
             switch (response) {
                 case "help", "h" -> {}
-                case "register", "r" -> {}
+                case "register", "r" -> register(responseParts, state);
                 case "login", "l" -> {state.logged_in = true;} //code for testing will change (:
                 case "quit", "q" -> {state.running = false;}
                 default -> System.out.print("Command not recognized. Type \"help\" for list of commands.");
             }
         }
+    }
+
+    private void register(String[] responseParts, ClientState state) {
+        if (responseParts.length != 4) {
+            System.out.print("Register requires 3 arguments: <username>, <password>, <email>");
+        }
+
     }
 
     private void get(String host, int port, String path) throws Exception {
