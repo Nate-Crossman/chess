@@ -29,6 +29,14 @@ public class ServerFacade {
         return makeRequest(method, path, new registerRequest(username, password, email), AuthData.class);
     }
 
+    private record loginRequest(String username, String password) {}
+
+    public AuthData login(String username, String password) throws ServerException {
+        String path = "/session";
+        String method = "POST";
+        return makeRequest(method, path, new loginRequest(username, password), AuthData.class);
+    }
+
     //universal helper function that builds and sents a request to the server
     private <T> T makeRequest(String method,
                               String path,
