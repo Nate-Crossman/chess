@@ -72,7 +72,7 @@ public class ChessClient {
                 case "list", "ls" -> listGames(state);
                 case "play", "p" -> {}
                 case "observe", "o" -> {}
-                default -> System.out.print("Command not recognized. Type \"help\" for list of commands.");
+                default -> System.out.println("Command not recognized. Type \"help\" for list of commands.");
             }
         } else {
             switch (responseParts[0]) {
@@ -80,7 +80,7 @@ public class ChessClient {
                 case "register", "r" -> register(responseParts, state);
                 case "login", "l" -> login(responseParts, state);
                 case "quit", "q" -> state.running = false;
-                default -> System.out.print("Command not recognized. Type \"help\" for list of commands.");
+                default -> System.out.println("Command not recognized. Type \"help\" for list of commands.");
             }
         }
     }
