@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 public class ServerFacade {
 
@@ -52,6 +53,18 @@ public class ServerFacade {
         createGameResponse response = makeRequest(method,
                 path, new createGameRequest(gameName), createGameResponse.class, authToken);
         return response.gameID;
+    }
+
+    public record listGameData(int gameID, String whiteUsername, String blackUsername, String gameName) {}
+
+    private record listGamesResponse(List<listGameData> games) {}
+
+    public List<listGameData> listGames(String authToken) {
+        String path = "/game";
+        String method = "GET";
+        listGamesResponse response = makeRequest(method,
+                path, null, listGamesResponse.class, authToken);
+        return response.games();
     }
 
     //universal helper function that builds and sents a request to the server
