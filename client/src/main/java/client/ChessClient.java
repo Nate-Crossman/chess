@@ -69,7 +69,7 @@ public class ChessClient {
                 case "help", "h" -> System.out.print(HELP_LOGGED_IN_MESSAGE);
                 case "logout", "l" -> logout(state);
                 case "create", "c" -> createGame(responseParts, state);
-                case "list", "ls" -> {}
+                case "list", "ls" -> listGames(state);
                 case "play", "p" -> {}
                 case "observe", "o" -> {}
                 default -> System.out.print("Command not recognized. Type \"help\" for list of commands.");
@@ -157,6 +157,43 @@ public class ChessClient {
             String errorMessage = "Create FAILED";
             switch (e.statusCode) {
                 case 400 -> errorMessage = errorMessage + ": Bad Request";
+                case 401 -> errorMessage = errorMessage + ": Authentication not recognized. Try restarting the application";
+                default -> {}
+            }
+            System.out.println(errorMessage);
+        }
+    }
+
+    private void listGames(ClientState state) {
+        try {
+            List<ServerFacade.listGameData> gameList = serverFacade.listGames(state.authToken);
+            if (gameList.isEmpty()) {
+                System.out.println("List SUCCESS: But there's no games! Create one by using the \"create\" command!");
+            } else {
+                state.gameIDs.clear();
+                for (int i = 0; i < gameList.size(); i++) {
+                    ServerFacade.listGameData game = gameList.get(i);
+                    state.gameIDs.put(i+1, game.gameID());
+                    String wu;
+                    String bu;
+                    if (game.whiteUsername() == null) {
+                        wu = "[ OPEN ]";
+                    } else {
+                        wu = game.whiteUsername();
+                    }
+                    if (game.blackUsername() == null) {
+                        bu = "[ OPEN ]";
+                    } else {
+                        bu = game.blackUsername();
+                    }
+                    String out = String.format("%d) %s | White: %s | Black: %s",i+1, game.gameName(), wu, bu);
+                    System.out.println(out);
+                }
+                System.out.println("List SUCCESS: Join a listed game by running \"join\" with the ID and Color");
+            }
+        } catch (ServerException e) {
+            String errorMessage = "List FAILED";
+            switch (e.statusCode) {
                 case 401 -> errorMessage = errorMessage + ": Authentication not recognized. Try restarting the application";
                 default -> {}
             }

@@ -47,7 +47,7 @@ public class ServerFacade {
 
     private record createGameResponse(int gameID) {}
 
-    public int createGame(String gameName, String authToken) {
+    public int createGame(String gameName, String authToken) throws ServerException {
         String path = "/game";
         String method = "POST";
         createGameResponse response = makeRequest(method,
@@ -59,7 +59,7 @@ public class ServerFacade {
 
     private record listGamesResponse(List<listGameData> games) {}
 
-    public List<listGameData> listGames(String authToken) {
+    public List<listGameData> listGames(String authToken) throws ServerException {
         String path = "/game";
         String method = "GET";
         listGamesResponse response = makeRequest(method,
