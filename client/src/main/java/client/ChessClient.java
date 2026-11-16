@@ -70,7 +70,7 @@ public class ChessClient {
                 case "logout", "l" -> logout(state);
                 case "create", "c" -> createGame(responseParts, state);
                 case "list", "ls" -> listGames(state);
-                case "play", "p" -> {}
+                case "play", "p", "join", "j" -> joinGame(responseParts, state);
                 case "observe", "o" -> {}
                 default -> System.out.println("Command not recognized. Type \"help\" for list of commands.");
             }
@@ -199,6 +199,48 @@ public class ChessClient {
             }
             System.out.println(errorMessage);
         }
+    }
+
+    private void joinGame(String[] responseParts, ClientState state) {
+        if (responseParts.length != 3) {
+            System.out.println("Play requires 2 arguments: <gameID>, [BLACK|WHITE]");
+            return;
+        }
+        if (state.gameIDs.isEmpty()) {
+            System.out.println("Uh oh! No valid games are found!" +
+                    "\n Try running \"list\" to get games from the server.");
+            return;
+        }
+        String color = responseParts[2];
+        if (!(color.equals("WHITE") || color.equals("BLACK"))) {
+            System.out.println("Team color can only be \"WHITE\" or \"BLACK\". This is case sensitive.");
+            return;
+        }
+        try {
+            int gameID = Integer.parseInt(responseParts[1]);
+            if (!state.gameIDs.containsKey(gameID)) {
+                System.out.println(String.format("%d is not in the list of games. Run \"list\" to see available games",
+                        gameID));
+                return;
+            }
+            int serverID = state.gameIDs.get(gameID);
+            serverFacade.joinGame(serverID, color, state.authToken);
+            System.out.println(String.format("Play SUCCESS: Joined game as %s", color));
+        } catch (NumberFormatException e) {
+            System.out.println("Play FAILED: Make sure <gameID> is a number!");
+            return;
+        } catch (ServerException e) {
+            String errorMessage = "Play FAILED";
+            switch (e.statusCode) {
+                case 400 -> errorMessage += ": Bad Request";
+                case 401 -> errorMessage += ": Authentication not recognized. Try restarting the application";
+                case 403 -> errorMessage += String.format(": %s is already taken by another player!", color);
+                default -> {}
+            }
+            System.out.println(errorMessage);
+        }
+
+
     }
 
 

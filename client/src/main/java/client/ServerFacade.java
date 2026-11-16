@@ -67,6 +67,14 @@ public class ServerFacade {
         return response.games();
     }
 
+    private record JoinGameRequest(int gameID, String playerColor) {}
+
+    public void joinGame(int gameID, String teamColor, String authToken) throws ServerException {
+        String path = "/game";
+        String method = "PUT";
+        makeRequest(method, path, new JoinGameRequest(gameID, teamColor), null, authToken);
+    }
+
     //universal helper function that builds and sents a request to the server
     private <T> T makeRequest(String method,
                               String path,
