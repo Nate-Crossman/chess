@@ -15,7 +15,6 @@ public class ServerFacade {
     private static final HttpClient httpClient = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
     private final String url;
-    private String authToken;
 
     public ServerFacade(String url) {
         this.url = url;
@@ -41,6 +40,18 @@ public class ServerFacade {
         String path = "/session";
         String method = "DELETE";
         makeRequest(method, path, null, null, authToken);
+    }
+
+    private record createGameRequest(String gameName) {}
+
+    private record createGameResponse(int gameID) {}
+
+    public int createGame(String gameName, String authToken) {
+        String path = "/game";
+        String method = "POST";
+        createGameResponse response = makeRequest(method,
+                path, new createGameRequest(gameName), createGameResponse.class, authToken);
+        return response.gameID;
     }
 
     //universal helper function that builds and sents a request to the server

@@ -6,14 +6,16 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
+//wow this is a really stupid way to do this but if it aint broke dont fix it, eh?
 class ClientState {
 //    Default states on bootup
     boolean running = true;
     boolean logged_in = false;
     String authToken;
+    Map<Integer, Integer> gameIDs = new HashMap<>();
+    int idCount = 1;
 }
 
 public class ChessClient {
@@ -66,7 +68,7 @@ public class ChessClient {
             switch (responseParts[0]) {
                 case "help", "h" -> System.out.print(HELP_LOGGED_IN_MESSAGE);
                 case "logout", "l" -> logout(state);
-                case "create", "c" -> {}
+                case "create", "c" -> createGame(responseParts, state);
                 case "list", "ls" -> {}
                 case "play", "p" -> {}
                 case "observe", "o" -> {}
@@ -76,8 +78,8 @@ public class ChessClient {
             switch (responseParts[0]) {
                 case "help", "h" -> System.out.print(HELP_LOGGED_OUT_MESSAGE);
                 case "register", "r" -> register(responseParts, state);
-                case "login", "l" -> login(responseParts, state); //code for testing will change (:
-                case "quit", "q" -> {state.running = false;}
+                case "login", "l" -> login(responseParts, state);
+                case "quit", "q" -> state.running = false;
                 default -> System.out.print("Command not recognized. Type \"help\" for list of commands.");
             }
         }
@@ -134,6 +136,27 @@ public class ChessClient {
         } catch (ServerException e) {
             String errorMessage = "Logout FAILED";
             switch (e.statusCode) {
+                case 401 -> errorMessage = errorMessage + ": Authentication not recognized. Try restarting the application";
+                default -> {}
+            }
+            System.out.println(errorMessage);
+        }
+    }
+
+    private void createGame(String[] responseParts, ClientState state) {
+        if (responseParts.length != 2) {
+            System.out.println("Create requires 1 argument: <game name>");
+            return;
+        }
+        try {
+            int gameID = serverFacade.createGame(responseParts[1], state.authToken);
+            state.gameIDs.put(state.idCount, gameID);
+            state.idCount++;
+            System.out.println("Create SUCCESS: You can view the created game by running the list command!");
+        } catch (ServerException e) {
+            String errorMessage = "Create FAILED";
+            switch (e.statusCode) {
+                case 400 -> errorMessage = errorMessage + ": Bad Request";
                 case 401 -> errorMessage = errorMessage + ": Authentication not recognized. Try restarting the application";
                 default -> {}
             }
