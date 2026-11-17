@@ -21,20 +21,20 @@ public class ServerFacade {
         this.url = url;
     }
 
-    private record registerRequest(String username, String password, String email) {}
+    private record RegisterRequest(String username, String password, String email) {}
 
     public AuthData register(String username, String password, String email) throws ServerException {
         String path = "/user";
         String method = "POST";
-        return makeRequest(method, path, new registerRequest(username, password, email), AuthData.class, null);
+        return makeRequest(method, path, new RegisterRequest(username, password, email), AuthData.class, null);
     }
 
-    private record loginRequest(String username, String password) {}
+    private record LoginRequest(String username, String password) {}
 
     public AuthData login(String username, String password) throws ServerException {
         String path = "/session";
         String method = "POST";
-        return makeRequest(method, path, new loginRequest(username, password), AuthData.class, null);
+        return makeRequest(method, path, new LoginRequest(username, password), AuthData.class, null);
     }
 
     public void logout(String authToken) throws ServerException {
@@ -43,27 +43,27 @@ public class ServerFacade {
         makeRequest(method, path, null, null, authToken);
     }
 
-    private record createGameRequest(String gameName) {}
+    private record CreateGameRequest(String gameName) {}
 
-    private record createGameResponse(int gameID) {}
+    private record CreateGameResponse(int gameID) {}
 
     public int createGame(String gameName, String authToken) throws ServerException {
         String path = "/game";
         String method = "POST";
-        createGameResponse response = makeRequest(method,
-                path, new createGameRequest(gameName), createGameResponse.class, authToken);
+        CreateGameResponse response = makeRequest(method,
+                path, new CreateGameRequest(gameName), CreateGameResponse.class, authToken);
         return response.gameID;
     }
 
-    public record listGameData(int gameID, String whiteUsername, String blackUsername, String gameName) {}
+    public record ListGameData(int gameID, String whiteUsername, String blackUsername, String gameName) {}
 
-    private record listGamesResponse(List<listGameData> games) {}
+    private record ListGamesResponse(List<ListGameData> games) {}
 
-    public List<listGameData> listGames(String authToken) throws ServerException {
+    public List<ListGameData> listGames(String authToken) throws ServerException {
         String path = "/game";
         String method = "GET";
-        listGamesResponse response = makeRequest(method,
-                path, null, listGamesResponse.class, authToken);
+        ListGamesResponse response = makeRequest(method,
+                path, null, ListGamesResponse.class, authToken);
         return response.games();
     }
 
