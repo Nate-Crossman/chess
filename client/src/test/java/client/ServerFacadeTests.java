@@ -53,5 +53,15 @@ public class ServerFacadeTests {
                 serverFacade.login("John Test", "wrong_password"));
     }
 
+    @Test
+    public void testLogout() {
+        AuthData data1 = serverFacade.register("John Test", "password", "email@email.com");
+        serverFacade.createGame("test", data1.authToken());
+        serverFacade.logout(data1.authToken());
+        Assertions.assertThrows(ServerException.class, () ->
+                serverFacade.createGame("test", data1.authToken()));
+    }
+
+
 
 }
