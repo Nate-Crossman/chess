@@ -75,6 +75,12 @@ public class ServerFacade {
         makeRequest(method, path, new JoinGameRequest(gameID, teamColor), null, authToken);
     }
 
+    public void clear() throws ServerException {
+        String path = "/db";
+        String method = "DELETE";
+        makeRequest(method, path, null, null, null);
+    }
+
     //universal helper function that builds and sents a request to the server
     private <T> T makeRequest(String method,
                               String path,
