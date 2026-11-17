@@ -43,4 +43,15 @@ public class ServerFacadeTests {
                 serverFacade.register("John Test", "password", "email@email.com"));
     }
 
+    @Test
+    public void testLogin() {
+        AuthData data1 = serverFacade.register("John Test", "password", "email@email.com");
+        AuthData data2 = serverFacade.login("John Test", "password");
+        Assertions.assertNotEquals(data1.authToken(), data2.authToken());
+        Assertions.assertEquals(data1.username(), data2.username());
+        Assertions.assertThrows(ServerException.class, () ->
+                serverFacade.login("John Test", "wrong_password"));
+    }
+
+
 }
