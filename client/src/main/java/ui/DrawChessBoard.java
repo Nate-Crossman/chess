@@ -55,19 +55,21 @@ class UITile {
 
 public class DrawChessBoard {
 
-    public void printChessBoard(ChessBoard chessBoard, boolean isWhite) {
+    public void printChessBoard(ChessBoard chessBoard, boolean isBlack) {
         UITile[][] board = buildBoard(chessBoard);
-        if (isWhite) {
+        if (isBlack) {
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
                     System.out.print(board[i][j].displayTile());
                 }
+                System.out.println();
             }
         } else {
             for (int i = 9; i >= 0; i--) {
                 for (int j = 9; j >=0; j--) {
                     System.out.print(board[i][j].displayTile());
                 }
+                System.out.println();
             }
         }
     }
@@ -81,14 +83,15 @@ public class DrawChessBoard {
         board[9][9] = new UITile(null);
         //lettered columns
         for (int j = 1; j < 9; j++) {
-            String character = " " + (char) ('a' + j-1) + " ";
+            String character = " \u2009" + (char) ('h'- j+1) + "\u2009 ";
             board[0][j] = new UITile(character);
             board[9][j] = new UITile(character);
         }
         //numbered rows
         for (int i = 1; i < 9; i++) {
-            board[i][0] = new UITile(String.valueOf(i));
-            board[i][9] = new UITile(String.valueOf(i));
+            String character = " \u2009" + i + "\u2009 ";
+            board[i][0] = new UITile(character);
+            board[i][9] = new UITile(character);
         }
         // the board
         for (int i = 1; i < 9; i++) {

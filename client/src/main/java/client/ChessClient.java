@@ -1,6 +1,8 @@
 package client;
 
+import chess.ChessBoard;
 import model.*;
+import ui.DrawChessBoard;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -38,13 +40,14 @@ public class ChessClient {
             quit -- signs out and exits the application
             """;
 
-    private static final HttpClient httpClient = HttpClient.newHttpClient();
     private final String url;
     private final ServerFacade serverFacade;
+    private final DrawChessBoard drawChessBoard;
 
     public ChessClient(String url) {
         this.url = url;
         serverFacade = new ServerFacade(url);
+        drawChessBoard = new DrawChessBoard();
     }
 
     public void run() {
@@ -71,7 +74,11 @@ public class ChessClient {
                 case "create", "c" -> createGame(responseParts, state);
                 case "list", "ls" -> listGames(state);
                 case "play", "p", "join", "j" -> joinGame(responseParts, state);
-                case "observe", "o" -> {}
+                case "observe", "o" -> {
+                    ChessBoard board = new ChessBoard();
+                    board.resetBoard();
+                    drawChessBoard.printChessBoard(board, false);
+                }
                 default -> System.out.println("Command not recognized. Type \"help\" for list of commands.");
             }
         } else {
