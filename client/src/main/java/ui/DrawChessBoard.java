@@ -9,6 +9,7 @@ class UITile {
     private final String bgColor;
     private final String textColor;
 
+    //cool awesome piece constructor
     UITile(ChessPiece piece, String bgColor) {
         this.bgColor = bgColor;
         if (piece == null) {
@@ -30,6 +31,17 @@ class UITile {
         } else {
             textColor = EscapeSequences.SET_TEXT_COLOR_RED;
         }
+    }
+
+    //cool awesome boarder constructor
+    UITile(String character) {
+        if (character == null) {
+            this.character = EscapeSequences.EMPTY;
+        } else {
+            this.character = character;
+        }
+        this.textColor = EscapeSequences.SET_TEXT_COLOR_BLACK;
+        this.bgColor = EscapeSequences.SET_BG_COLOR + "187m"; //beige
 
     }
 
@@ -59,7 +71,8 @@ public class DrawChessBoard {
 
     private UITile[][] buildBoard(ChessGame game) {
         UITile[][] board = new UITile[10][10];
-
+        //get boarders
+        return board;
     }
 
 }
