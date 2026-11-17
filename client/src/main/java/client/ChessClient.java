@@ -4,17 +4,13 @@ import chess.ChessBoard;
 import model.*;
 import ui.DrawChessBoard;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.*;
 
 //wow this is a really stupid way to do this but if it aint broke dont fix it, eh?
 class ClientState {
 //    Default states on bootup
     boolean running = true;
-    boolean logged_in = false;
+    boolean loggedIn = false;
     String authToken;
     Map<Integer, Integer> gameIDs = new HashMap<>();
     int idCount = 1;
@@ -54,7 +50,7 @@ public class ChessClient {
         Scanner input = new Scanner(System.in);
         ClientState state = new ClientState();
         while (state.running) {
-            if (state.logged_in) {
+            if (state.loggedIn) {
                 System.out.print("[LOGGED IN] > ");
             } else {
                 System.out.print("[LOGGED OUT] > ");
@@ -67,7 +63,7 @@ public class ChessClient {
 
     private void handle(String response, ClientState state) {
         String[] responseParts = response.trim().split("\\s+");
-        if (state.logged_in) {
+        if (state.loggedIn) {
             switch (responseParts[0]) {
                 case "help", "h" -> System.out.print(HELP_LOGGED_IN_MESSAGE);
                 case "logout", "l" -> logout(state);
@@ -75,10 +71,12 @@ public class ChessClient {
                 case "list", "ls" -> listGames(state);
                 case "play", "p", "join", "j" -> joinGame(responseParts, state);
                 case "observe", "o" -> {
+                    System.out.println("Observe functionality not yet added. Board UI demo displayed instead (:");
                     ChessBoard board = new ChessBoard();
                     board.resetBoard();
                     drawChessBoard.printChessBoard(board, false);
                 }
+                case "quit", "q" -> state.running = false;
                 default -> System.out.println("Command not recognized. Type \"help\" for list of commands.");
             }
         } else {
@@ -100,7 +98,7 @@ public class ChessClient {
         try {
             AuthData data = serverFacade.register(responseParts[1], responseParts[2], responseParts[3]);
             state.authToken = data.authToken();
-            state.logged_in = true;
+            state.loggedIn = true;
             System.out.println(String.format("Register SUCCESS: Signed in as %s", data.username()));
         } catch (ServerException e) {
             String errorMessage = "Register FAILED";
@@ -121,7 +119,7 @@ public class ChessClient {
         try {
             AuthData data = serverFacade.login(responseParts[1], responseParts[2]);
             state.authToken = data.authToken();
-            state.logged_in = true;
+            state.loggedIn = true;
             System.out.println(String.format("Login SUCCESS: Signed in as %s", data.username()));
         } catch (ServerException e) {
             String errorMessage = "Login FAILED";
@@ -138,12 +136,13 @@ public class ChessClient {
         try {
             serverFacade.logout(state.authToken);
             state.authToken = null;
-            state.logged_in = false;
+            state.loggedIn = false;
             System.out.println("Logout SUCCESS: Bye bye!");
         } catch (ServerException e) {
             String errorMessage = "Logout FAILED";
             switch (e.statusCode) {
-                case 401 -> errorMessage = errorMessage + ": Authentication not recognized. Try restarting the application";
+                case 401 -> errorMessage = errorMessage + ": Authentication not recognized." +
+                        " Try restarting the application";
                 default -> {}
             }
             System.out.println(errorMessage);
@@ -164,7 +163,8 @@ public class ChessClient {
             String errorMessage = "Create FAILED";
             switch (e.statusCode) {
                 case 400 -> errorMessage = errorMessage + ": Bad Request";
-                case 401 -> errorMessage = errorMessage + ": Authentication not recognized. Try restarting the application";
+                case 401 -> errorMessage = errorMessage + ": Authentication not recognized." +
+                        " Try restarting the application";
                 default -> {}
             }
             System.out.println(errorMessage);
@@ -201,7 +201,8 @@ public class ChessClient {
         } catch (ServerException e) {
             String errorMessage = "List FAILED";
             switch (e.statusCode) {
-                case 401 -> errorMessage = errorMessage + ": Authentication not recognized. Try restarting the application";
+                case 401 -> errorMessage = errorMessage + ": Authentication not recognized." +
+                        " Try restarting the application";
                 default -> {}
             }
             System.out.println(errorMessage);
@@ -246,11 +247,6 @@ public class ChessClient {
             }
             System.out.println(errorMessage);
         }
-
-
     }
 
-
-//    THIS CLASS DEALS WITH UI AND THE USER INPUT, GIVES IT TO SERVERFACADE TO ACTUALLY INTERACT W/ THE SERVER
-//    HANDLES ERRORS HERE IN A PRETTY WAY
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ServerFacade {
 
-    private static final HttpClient httpClient = HttpClient.newHttpClient();
+    private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
     private final String url;
 
@@ -104,7 +104,7 @@ public class ServerFacade {
             }
             HttpRequest request = builder.build();
             //send request and convert it into a response string
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
                 String errorMessage = getErrorMessage(response.body());
                 throw new ServerException(errorMessage, response.statusCode());
