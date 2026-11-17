@@ -1,6 +1,7 @@
 package client;
 
 import dataaccess.DataAccessException;
+import model.AuthData;
 import org.junit.jupiter.api.*;
 import server.Server;
 
@@ -15,7 +16,7 @@ public class ServerFacadeTests {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
-        serverFacade = new ServerFacade("http://localhost:0");
+        serverFacade = new ServerFacade("http://localhost:" + port);
     }
 
     @AfterAll
@@ -32,10 +33,14 @@ public class ServerFacadeTests {
         }
     }
 
-
     @Test
-    public void sampleTest() {
-        Assertions.assertTrue(true);
+    public void testRegister() {
+        AuthData data1 = serverFacade.register("John Test", "password", "email@email.com");
+        AuthData data2 = serverFacade.register("Jane Test", "password", "email@email.com");
+        Assertions.assertNotEquals(data1.authToken(), data2.authToken());
+        //duplicate user throws error
+        Assertions.assertThrows(ServerException.class, () ->
+                serverFacade.register("John Test", "password", "email@email.com"));
     }
 
 }
