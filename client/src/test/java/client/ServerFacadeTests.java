@@ -74,4 +74,20 @@ public class ServerFacadeTests {
                 serverFacade.createGame("test", "fake_auth_token"));
     }
 
+    @Test
+    public void testListGames() {
+        AuthData data1 = serverFacade.register("John Test", "password", "email@email.com");
+        serverFacade.createGame("test", data1.authToken());
+        List<ServerFacade.ListGameData> gameList = serverFacade.listGames(data1.authToken());
+        Assertions.assertEquals(1, gameList.size());
+        serverFacade.createGame("test", data1.authToken());
+        serverFacade.createGame("test", data1.authToken());
+        gameList = serverFacade.listGames(data1.authToken());
+        Assertions.assertEquals(3, gameList.size());
+        Assertions.assertThrows(ServerException.class, () ->
+                serverFacade.listGames("fake_auth_token"));
+    }
+
+
+
 }
