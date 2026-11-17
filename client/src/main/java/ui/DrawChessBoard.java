@@ -1,8 +1,11 @@
 package ui;
 
 
+
+import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
+import chess.ChessPosition;
 
 class UITile {
     private final String character;
@@ -52,8 +55,8 @@ class UITile {
 
 public class DrawChessBoard {
 
-    public void printChessBoard(ChessGame game, boolean isWhite) {
-        UITile[][] board = buildBoard(game);
+    public void printChessBoard(ChessBoard chessBoard, boolean isWhite) {
+        UITile[][] board = buildBoard(chessBoard);
         if (isWhite) {
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
@@ -69,10 +72,48 @@ public class DrawChessBoard {
         }
     }
 
-    private UITile[][] buildBoard(ChessGame game) {
+    private UITile[][] buildBoard(ChessBoard chessBoard) {
         UITile[][] board = new UITile[10][10];
-        //get boarders
+        //CORNERS
+        board[0][0] = new UITile(null);
+        board[9][0] = new UITile(null);
+        board[0][9] = new UITile(null);
+        board[9][9] = new UITile(null);
+        //lettered columns
+        for (int j = 1; j < 9; j++) {
+            String character = " " + (char) ('a' + j-1) + " ";
+            board[0][j] = new UITile(character);
+            board[9][j] = new UITile(character);
+        }
+        //numbered rows
+        for (int i = 1; i < 9; i++) {
+            board[i][0] = new UITile(String.valueOf(i));
+            board[i][9] = new UITile(String.valueOf(i));
+        }
+        // the board
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                String bgColor = getBgColor(i,j);
+                ChessPosition pos = new ChessPosition(i,j);
+                board[i][j] = new UITile(chessBoard.getPiece(pos), bgColor);
+            }
+        }
         return board;
     }
 
+    String getBgColor(int i, int j) {
+        if (i % 2 == 0) { //even rows
+            if (j % 2 == 0) { //even col
+                return EscapeSequences.SET_BG_COLOR_LIGHT_GREY;
+            } else {
+                return EscapeSequences.SET_BG_COLOR_DARK_GREY;
+            }
+        } else {
+            if (j % 2 == 0) { //even col
+                return EscapeSequences.SET_BG_COLOR_DARK_GREY;
+            } else {
+                return EscapeSequences.SET_BG_COLOR_LIGHT_GREY;
+            }
+        }
+    }
 }
