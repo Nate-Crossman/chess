@@ -88,6 +88,29 @@ public class ServerFacadeTests {
                 serverFacade.listGames("fake_auth_token"));
     }
 
-
+    @Test
+    public void testJoinGames() {
+        AuthData john = serverFacade.register("John Test", "password", "john@email.com");
+        AuthData jane = serverFacade.register("Jane Test", "password", "jane@email.com");
+        AuthData jim = serverFacade.register("Jim Test", "password", "jim@email.com");
+        int gameID = serverFacade.createGame("test", john.authToken());
+        serverFacade.joinGame(gameID, "WHITE", john.authToken());
+        serverFacade.joinGame(gameID, "BLACK", jane.authToken());
+        List<ServerFacade.ListGameData> gameList = serverFacade.listGames(john.authToken());
+        Assertions.assertEquals(1, gameList.size());
+        Assertions.assertEquals("John Test", gameList.get(0).whiteUsername());
+        Assertions.assertEquals("Jane Test", gameList.get(0).blackUsername());
+        Assertions.assertThrows(ServerException.class, () ->
+                serverFacade.joinGame(gameID, "WHITE", jim.authToken()));
+        Assertions.assertThrows(ServerException.class, () ->
+                serverFacade.joinGame(gameID, "BLACK", jim.authToken()));
+        int openGameID = serverFacade.createGame("open game", john.authToken());
+        Assertions.assertThrows(ServerException.class, () ->
+                serverFacade.joinGame(openGameID, "GREEN", john.authToken()));
+        Assertions.assertThrows(ServerException.class, () ->
+                serverFacade.joinGame(openGameID, "WHITE", "fake_auth_token"));
+        Assertions.assertThrows(ServerException.class, () ->
+                serverFacade.joinGame(400, "WHITE", john.authToken()));
+    }
 
 }
