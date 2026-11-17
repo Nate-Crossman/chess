@@ -173,13 +173,13 @@ public class ChessClient {
 
     private void listGames(ClientState state) {
         try {
-            List<ServerFacade.listGameData> gameList = serverFacade.listGames(state.authToken);
+            List<ServerFacade.ListGameData> gameList = serverFacade.listGames(state.authToken);
             if (gameList.isEmpty()) {
                 System.out.println("List SUCCESS: But there's no games! Create one by using the \"create\" command!");
             } else {
                 state.gameIDs.clear();
                 for (int i = 0; i < gameList.size(); i++) {
-                    ServerFacade.listGameData game = gameList.get(i);
+                    ServerFacade.ListGameData game = gameList.get(i);
                     state.gameIDs.put(i+1, game.gameID());
                     String wu;
                     String bu;

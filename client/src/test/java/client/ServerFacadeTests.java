@@ -5,6 +5,8 @@ import model.AuthData;
 import org.junit.jupiter.api.*;
 import server.Server;
 
+import java.util.List;
+
 
 public class ServerFacadeTests {
 
@@ -62,6 +64,14 @@ public class ServerFacadeTests {
                 serverFacade.createGame("test", data1.authToken()));
     }
 
-
+    @Test
+    public void testCreateGame() {
+        AuthData data1 = serverFacade.register("John Test", "password", "email@email.com");
+        serverFacade.createGame("test", data1.authToken());
+        List<ServerFacade.ListGameData> gameList = serverFacade.listGames(data1.authToken());
+        Assertions.assertEquals(1, gameList.size());
+        Assertions.assertThrows(ServerException.class, () ->
+                serverFacade.createGame("test", "fake_auth_token"));
+    }
 
 }
